@@ -3,3 +3,8 @@
 @theme {
   --color-emoria-purple: #6B46C1;
 }
+.vc-day-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -85,7 +85,7 @@ const handleFinalSave = () => {
 
     <div class="w-full flex flex-col gap-3 mt-8">
       <button @click="handleAddSuccess" class="w-full py-5 bg-white border border-slate-100 text-slate-400 rounded-3xl font-bold active:bg-slate-50 transition-all">
-        Ajouter une réussite
+        Enregistrer la réussite
       </button>
       <button 
         @click="handleFinalSave" 
