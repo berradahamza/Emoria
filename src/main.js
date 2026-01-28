@@ -1,4 +1,4 @@
-import './assets/main.css' // 1. IMPORTANT : Charge Tailwind et ton design Figma
+import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -6,12 +6,20 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-// 2. Initialisation de Firebase (Optionnel ici, mais propre pour le suivi)
-import './firebase/config' 
+import './firebase/config'
+import { useAuthStore } from './stores/auth'
+
+import { registerSW } from 'virtual:pwa-register'
+registerSW({ immediate: true })
 
 const app = createApp(App)
 
-app.use(createPinia()) // Ton "Contrôleur" pour l'architecture MVC
+const pinia = createPinia()
+app.use(pinia)
+
 app.use(router)
+
+const authStore = useAuthStore()
+authStore.initAuthListener()
 
 app.mount('#app')

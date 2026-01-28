@@ -22,6 +22,11 @@ const moodIcons = {
   5: IconTresBien
 }
 
+import { useAuthStore } from '../stores/auth'
+const authStore = useAuthStore()
+const logout = async () => { await authStore.logout() }
+
+
 // ===== Dates en LOCAL (PAS de toISOString) =====
 const toYMDLocal = (d) => {
   const y = d.getFullYear()
@@ -43,6 +48,7 @@ const goToTunnel = (date = new Date()) => {
   router.push('/step-mood')
 }
 </script>
+
 
 <template>
   <div class="min-h-screen bg-white px-6 py-12 font-sans overflow-x-hidden">

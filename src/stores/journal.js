@@ -1,5 +1,13 @@
-// journal.js
+// src/stores/journal.js
 import { defineStore } from 'pinia'
+import { db } from '../firebase/config'
+import {
+  doc,
+  setDoc,
+  getDocs,
+  collection,
+  serverTimestamp
+} from 'firebase/firestore'
 
 export const useJournalStore = defineStore('journal', {
   state: () => ({
@@ -30,11 +38,8 @@ export const useJournalStore = defineStore('journal', {
   }),
 
   getters: {
-    // IMPORTANT: convertir "YYYY-MM-DD" -> Date locale stable (pas new Date("YYYY-MM-DD") qui part en UTC)
     calendarAttributes() {
-      // dépendance explicite pour forcer le recalcul quand on sauvegarde
       const _ = this.updateCounter
-
       return Object.keys(this.savedEntries).map((dateKey) => ({
         key: dateKey,
         dates: this.parseYMDLocal(dateKey),
@@ -53,13 +58,11 @@ export const useJournalStore = defineStore('journal', {
     },
 
     parseYMDLocal(ymd) {
-      // "YYYY-MM-DD" -> Date en timezone locale (minuit local)
       const [y, m, d] = String(ymd).split('-').map(Number)
       return new Date(y, m - 1, d)
     },
 
     normalizeDate(dateInput) {
-      // v-calendar peut fournir un Date -> on force toujours "YYYY-MM-DD" local
       if (dateInput instanceof Date) return this.toYMDLocal(dateInput)
       return String(dateInput)
     },
@@ -81,10 +84,9 @@ export const useJournalStore = defineStore('journal', {
       }
     },
 
+    // Local save (utile si tu veux garder un mode offline)
     saveCurrentEntry() {
       const dateString = this.normalizeDate(this.selectedDate)
-
-      // Copie immuable -> réactivité Vue/Pinia nickel
       this.savedEntries = {
         ...this.savedEntries,
         [dateString]: {
@@ -93,11 +95,48 @@ export const useJournalStore = defineStore('journal', {
           successList: [...this.successList]
         }
       }
-
-      // Trigger recalcul + éventuellement rerender côté HomeView (si tu utilises :key)
       this.updateCounter++
     },
 
+    // ===== Firestore =====
+    async saveCurrentEntryToCloud(uid) {
+      if (!uid) throw new Error('No uid')
+
+      const dateString = this.normalizeDate(this.selectedDate)
+
+      const payload = {
+        mood: Number(this.mood),
+        positivesText: this.positivesText,
+        successList: [...this.successList],
+        updatedAt: serverTimestamp()
+      }
+
+      await setDoc(doc(db, 'users', uid, 'entries', dateString), payload, { merge: true })
+
+      // UX instant: on maintient le cache local synchro
+      this.savedEntries = { ...this.savedEntries, [dateString]: payload }
+      this.updateCounter++
+    },
+
+    async loadEntriesForUser(uid) {
+      if (!uid) return
+
+      const colRef = collection(db, 'users', uid, 'entries')
+      const snap = await getDocs(colRef)
+
+      // Tri côté client sur l'ID (YYYY-MM-DD)
+      const entries = {}
+      snap.docs
+        .sort((a, b) => a.id.localeCompare(b.id))
+        .forEach((d) => {
+          entries[d.id] = d.data()
+        })
+
+      this.savedEntries = entries
+      this.updateCounter++
+    },
+
+    // ===== Tags & Success =====
     addNewTag(name) {
       const clean = String(name ?? '').trim()
       if (!clean) return
