@@ -151,8 +151,11 @@ export const useJournalStore = defineStore('journal', {
     addSuccess(text, tagName) {
       const t = String(text ?? '').trim()
       if (!t) return
-      this.successList.push({ text: t, tag: tagName })
+
+      const tag = (tagName ?? null)
+      this.successList.push({ text: t, tag })
     },
+
 
     removeSuccess(index) {
       if (index < 0 || index >= this.successList.length) return

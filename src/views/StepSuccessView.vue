@@ -34,7 +34,7 @@ const handleAddTag = () => {
 
 const handleAddSuccess = () => {
   if (currentSuccess.value.trim()) {
-    store.addSuccess(currentSuccess.value, selectedTag.value?.name)
+    store.addSuccess(currentSuccess.value, selectedTag.value?.name ?? null)
     currentSuccess.value = ''
     selectedTag.value = null
   }
