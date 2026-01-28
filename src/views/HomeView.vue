@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useJournalStore } from '../stores/journal'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
-import TopBanner from '../components/TopBanner.vue' // C'est maintenant ta barre du bas
+import TopBanner from '../components/TopBanner.vue'
 
 import IconTresMal from '../components/icons/IconTresMal.vue'
 import IconMal from '../components/icons/IconMal.vue'
@@ -26,7 +26,6 @@ const moodIcons = {
   5: IconTresBien
 }
 
-// ===== Dates en LOCAL (PAS de toISOString) =====
 const toYMDLocal = (d) => {
   const y = d.getFullYear()
   const m = String(d.getMonth() + 1).padStart(2, '0')
@@ -36,7 +35,6 @@ const toYMDLocal = (d) => {
 
 const todayYMD = computed(() => toYMDLocal(new Date()))
 
-// journée “remplie” = mood + (positifs remplis) + (au moins 1 réussite)
 const todayEntry = computed(() => store.savedEntries[todayYMD.value] || null)
 const todayIsFilled = computed(() => {
   const e = todayEntry.value
@@ -47,8 +45,6 @@ const todayIsFilled = computed(() => {
   return hasMood && hasPositives && hasSuccess
 })
 
-// Le cercle bleu (sélection v-calendar) ne doit être visible QUE sur aujourd’hui
-// ET uniquement si aujourd’hui n’est pas rempli.
 const pickerModelValue = computed(() => (todayIsFilled.value ? null : todayYMD.value))
 
 const goToTunnel = (date = new Date()) => {
@@ -57,7 +53,6 @@ const goToTunnel = (date = new Date()) => {
   router.push('/step-mood')
 }
 
-// Bonjour + prénom dynamique
 const userFirstName = computed(() => {
   const u = authStore.user || {}
   const raw =
@@ -68,7 +63,6 @@ const userFirstName = computed(() => {
   return String(raw).trim().split(' ')[0]
 })
 
-// couleurs pastilles
 const POSITIVE_COLOR = '#4F6CCF'
 const SUCCESS_COLOR = '#C46BCF'
 </script>
@@ -77,7 +71,7 @@ const SUCCESS_COLOR = '#C46BCF'
   <div class="min-h-screen bg-white px-6 pt-12 pb-28 font-sans overflow-x-hidden">
 
     <header class="mb-10">
-      <h1 class="text-3xl text-slate-400">
+      <h1 class="text-3xl text-slate-500">
         Bonjour
         <span class="font-bold text-[#6750A3]">
           {{ userFirstName }} !
@@ -92,7 +86,7 @@ const SUCCESS_COLOR = '#C46BCF'
       <button
         v-if="!todayIsFilled"
         @click="goToTunnel(new Date())"
-        class="w-full px-5 py-4 border border-purple-200 rounded-2xl flex items-center justify-between active:scale-95 transition-all"
+        class="w-full px-5 py-4 bg-white border border-white rounded-xl shadow-sm flex items-center justify-between active:scale-95 transition-all"
       >
         <span class="text-[#6750A3] font-semibold text-base">
           Compléter ma journée
@@ -106,7 +100,7 @@ const SUCCESS_COLOR = '#C46BCF'
       <button
         v-else
         @click="goToTunnel(new Date())"
-        class="w-full px-5 py-4 border border-purple-200 rounded-2xl flex items-center justify-between active:scale-95 transition-all"
+        class="w-full px-5 py-4 bg-white border border-white rounded-xl shadow-sm flex items-center justify-between active:scale-95 transition-all"
       >
         <span class="text-[#6750A3] font-semibold text-base">
           Bravo, tu as complété ta journée
@@ -121,7 +115,7 @@ const SUCCESS_COLOR = '#C46BCF'
     <section>
       <h2 class="text-xl font-bold text-slate-900 mb-6">Mon calendrier</h2>
 
-      <div class="bg-white rounded-[2.5rem] p-4 border border-slate-100 shadow-sm">
+      <div class="bg-white rounded-xl p-4 border border-white shadow-sm">
         <DatePicker
           :key="store.updateCounter"
           :model-value="pickerModelValue"

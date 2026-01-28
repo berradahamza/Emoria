@@ -98,7 +98,7 @@ const top2SuccessTags = computed(() => {
     <section class="mb-10">
       <h2 class="text-xl font-bold text-slate-900 mb-4">Ton mood ces 7 derniers jours</h2>
 
-      <div class="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-sm">
+      <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
         <div v-if="weeklyMoodValue" class="flex flex-col items-center">
           <div
             class="relative flex items-center justify-center w-56 h-56 rounded-full transition-colors duration-300"
@@ -127,7 +127,7 @@ const top2SuccessTags = computed(() => {
         Tags les plus fréquents sur tes réussites des 7 derniers jours.
       </p>
 
-      <div class="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-sm">
+      <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
         <div class="flex flex-wrap gap-2">
           <span v-if="top2SuccessTags.length === 0" class="text-slate-400 text-sm">
             Aucun tag trouvé sur tes réussites récentes.
