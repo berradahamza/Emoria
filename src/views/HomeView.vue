@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, nextTick } from 'vue' // Ajout de onMounted et nextTick
 import { useRouter } from 'vue-router'
 import { useJournalStore } from '../stores/journal'
 import { DatePicker } from 'v-calendar'
@@ -17,6 +17,9 @@ import { useAuthStore } from '../stores/auth'
 const router = useRouter()
 const store = useJournalStore()
 const authStore = useAuthStore()
+
+// Référence pour contrôler le calendrier impérativement
+const calendarRef = ref(null)
 
 const moodIcons = {
   1: IconTresMal,
@@ -36,20 +39,34 @@ const toYMDLocal = (d) => {
 const todayYMD = computed(() => toYMDLocal(new Date()))
 
 const todayEntry = computed(() => store.savedEntries[todayYMD.value] || null)
+
+// La journée est remplie si on a une humeur enregistrée
 const todayIsFilled = computed(() => {
   const e = todayEntry.value
-  if (!e) return false
-  const hasMood = !!e.mood
-  const hasPositives = String(e.positivesText || '').trim().length > 0
-  const hasSuccess = Array.isArray(e.successList) && e.successList.length > 0
-  return hasMood && hasPositives && hasSuccess
+  return e && !!e.mood
 })
 
-// MODIF 1 : On met null pour ne jamais avoir le cercle de sélection par défaut
 const pickerModelValue = null
+
+// On garde la page synchronisée sur le mois actuel
+const calendarPage = ref({
+  month: new Date().getMonth() + 1,
+  year: new Date().getFullYear()
+})
+
+// AU CHARGEMENT : On force le calendrier à aller sur "Aujourd'hui"
+onMounted(async () => {
+  await nextTick()
+  if (calendarRef.value) {
+    // Cette commande oblige le calendrier à afficher le mois courant
+    calendarRef.value.move(new Date())
+  }
+})
 
 const goToTunnel = (date = new Date()) => {
   const dateString = date instanceof Date ? toYMDLocal(date) : String(date)
+  // Sécurité : impossible d'aller dans le futur
+  if (dateString > todayYMD.value) return
   store.loadDate(dateString)
   router.push('/step-mood')
 }
@@ -118,9 +135,10 @@ const SUCCESS_COLOR = '#C46BCF'
 
       <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
         <DatePicker
-          :key="store.updateCounter"
+          ref="calendarRef"
           :model-value="pickerModelValue"
           @update:modelValue="() => {}"
+          v-model:page="calendarPage"
           :model-config="{ type: 'string', mask: 'YYYY-MM-DD' }"
           expanded
           transparent
@@ -129,14 +147,17 @@ const SUCCESS_COLOR = '#C46BCF'
           :attributes="store.calendarAttributes"
         >
           <template #day-content="{ day, attributes }">
-            <div class="flex flex-col items-center justify-start w-full h-full min-h-[60px] cursor-pointer"
-                 @click="goToTunnel(day.date)">
+            <div
+              class="flex flex-col items-center justify-start w-full h-full min-h-[60px]"
+              :class="day.id <= todayYMD ? 'cursor-pointer' : 'cursor-default'"
+              @click="day.id <= todayYMD && goToTunnel(day.date)"
+            >
 
               <span class="text-xs font-semibold text-slate-400 mb-0.5">
                 {{ day.day }}
               </span>
 
-              <div class="flex-1 flex flex-col items-center justify-start">
+              <div v-if="day.id <= todayYMD" class="flex-1 flex flex-col items-center justify-start">
 
                 <template v-if="attributes?.length > 0 && attributes[0].customData?.mood">
                   <component

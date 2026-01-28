@@ -93,7 +93,7 @@ const top2SuccessTags = computed(() => {
 <template>
   <div class="min-h-screen bg-white px-6 pt-10 pb-28">
 
-    <h1 class="text-3xl font-extrabold text-slate-900 mb-8">Analyse</h1>
+    <h1 class="text-3xl font-extrabold text-slate-900 mb-8">Récapitulatif</h1>
 
     <section class="mb-10">
       <h2 class="text-xl font-bold text-slate-900 mb-4">Ton mood ces 7 derniers jours</h2>

@@ -171,7 +171,7 @@ const goBack = () => {
         @click="handleAddSuccess"
         class="w-full py-5 bg-white border border-slate-200 text-slate-400 font-bold rounded-xl active:bg-slate-50 transition-all"
       >
-        Ajouter une réussite
+        Enregister la réussite
       </button>
 
       <button
