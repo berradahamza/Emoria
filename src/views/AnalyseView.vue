@@ -1,4 +1,3 @@
-<!-- src/views/AnalyseView.vue -->
 <script setup>
 import { computed } from 'vue'
 import TopBanner from '../components/TopBanner.vue'
@@ -92,36 +91,36 @@ const top2SuccessTags = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white px-6 py-10">
-    <TopBanner />
+  <div class="min-h-screen bg-white px-6 pt-10 pb-28">
 
     <h1 class="text-3xl font-extrabold text-slate-900 mb-8">Analyse</h1>
 
-    <!-- TITRE EN DEHORS (comme Home) -->
     <section class="mb-10">
       <h2 class="text-xl font-bold text-slate-900 mb-4">Ton mood ces 7 derniers jours</h2>
 
       <div class="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-sm">
         <div v-if="weeklyMoodValue" class="flex flex-col items-center">
           <div
-            class="relative flex items-center justify-center w-64 h-64 rounded-full transition-colors duration-300"
+            class="relative flex items-center justify-center w-56 h-56 rounded-full transition-colors duration-300"
             :class="weeklyHaloClass"
           >
-            <component :is="moodIcons[weeklyMoodValue]" class="w-32 h-32 scale-150 transition-all duration-300" />
+            <component
+              :is="moodIcons[weeklyMoodValue]"
+              class="w-20 h-20 scale-125 transition-all duration-300"
+            />
           </div>
 
-          <div class="mt-5 text-xl font-bold text-[#6750A3]">
+          <div class="mt-6 text-xl font-bold text-[#6750A3]">
             {{ weeklyMoodLabel }}
           </div>
         </div>
 
-        <div v-else class="text-slate-400 text-sm">
+        <div v-else class="text-slate-400 text-sm text-center">
           Pas assez de données sur les 7 derniers jours.
         </div>
       </div>
     </section>
 
-    <!-- TITRE + SOUS-TEXTE EN DEHORS (comme Home) -->
     <section>
       <h2 class="text-xl font-bold text-slate-900 mb-2">Mes plus grands succès</h2>
       <p class="text-sm text-slate-400 mb-4">
@@ -144,5 +143,7 @@ const top2SuccessTags = computed(() => {
         </div>
       </div>
     </section>
+
+    <TopBanner />
   </div>
 </template>

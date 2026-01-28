@@ -1,11 +1,10 @@
-<!-- src/views/HomeView.vue -->
 <script setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useJournalStore } from '../stores/journal'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
-import TopBanner from '../components/TopBanner.vue'
+import TopBanner from '../components/TopBanner.vue' // C'est maintenant ta barre du bas
 
 import IconTresMal from '../components/icons/IconTresMal.vue'
 import IconMal from '../components/icons/IconMal.vue'
@@ -38,7 +37,6 @@ const toYMDLocal = (d) => {
 const todayYMD = computed(() => toYMDLocal(new Date()))
 
 // journée “remplie” = mood + (positifs remplis) + (au moins 1 réussite)
-// (tu peux assouplir si tu veux, mais ta maquette “bravo” suggère “tunnel complété”)
 const todayEntry = computed(() => store.savedEntries[todayYMD.value] || null)
 const todayIsFilled = computed(() => {
   const e = todayEntry.value
@@ -50,7 +48,7 @@ const todayIsFilled = computed(() => {
 })
 
 // Le cercle bleu (sélection v-calendar) ne doit être visible QUE sur aujourd’hui
-// ET uniquement si aujourd’hui n’est pas rempli. Sinon : aucune sélection => pas de cercle bleu.
+// ET uniquement si aujourd’hui n’est pas rempli.
 const pickerModelValue = computed(() => (todayIsFilled.value ? null : todayYMD.value))
 
 const goToTunnel = (date = new Date()) => {
@@ -60,7 +58,6 @@ const goToTunnel = (date = new Date()) => {
 }
 
 // Bonjour + prénom dynamique
-// (fallback si displayName n’existe pas)
 const userFirstName = computed(() => {
   const u = authStore.user || {}
   const raw =
@@ -68,18 +65,17 @@ const userFirstName = computed(() => {
     u.name ||
     (u.email ? String(u.email).split('@')[0] : '') ||
     'toi'
-  // on garde le premier “mot” si c’est un nom complet
   return String(raw).trim().split(' ')[0]
 })
 
-// couleurs pastilles (selon tes specs)
+// couleurs pastilles
 const POSITIVE_COLOR = '#4F6CCF'
 const SUCCESS_COLOR = '#C46BCF'
 </script>
 
 <template>
-  <div class="min-h-screen bg-white px-6 py-12 font-sans overflow-x-hidden">
-    <TopBanner />
+  <div class="min-h-screen bg-white px-6 pt-12 pb-28 font-sans overflow-x-hidden">
+
     <header class="mb-10">
       <h1 class="text-3xl text-slate-400">
         Bonjour
@@ -93,7 +89,6 @@ const SUCCESS_COLOR = '#C46BCF'
     <section class="mb-12">
       <h2 class="text-xl font-bold text-slate-900 mb-4">Ma journée</h2>
 
-      <!-- état “pas rempli” => bouton compact comme maquette -->
       <button
         v-if="!todayIsFilled"
         @click="goToTunnel(new Date())"
@@ -108,7 +103,6 @@ const SUCCESS_COLOR = '#C46BCF'
         </div>
       </button>
 
-      <!-- état “rempli” => message bravo comme maquette -->
       <button
         v-else
         @click="goToTunnel(new Date())"
@@ -148,14 +142,12 @@ const SUCCESS_COLOR = '#C46BCF'
                 class="flex flex-col items-center justify-center w-full h-full cursor-pointer gap-1"
                 @click="goToTunnel(day.date)"
               >
-                <!-- journée remplie (au moins mood) => emoji -->
                 <template v-if="attributes?.length > 0 && attributes[0].customData?.mood">
                   <component
                     :is="moodIcons[attributes[0].customData.mood]"
                     class="w-6 h-6 object-contain"
                   />
 
-                  <!-- pastilles sous l’emoji (positifs / succès) -->
                   <div class="flex items-center justify-center gap-1 mt-0.5">
                     <span
                       v-if="String(attributes[0].customData.positivesText || '').trim().length > 0"
@@ -170,7 +162,6 @@ const SUCCESS_COLOR = '#C46BCF'
                   </div>
                 </template>
 
-                <!-- sinon => + -->
                 <div
                   v-else
                   class="w-9 h-9 rounded-full border border-dashed border-slate-200
@@ -188,5 +179,8 @@ const SUCCESS_COLOR = '#C46BCF'
         </DatePicker>
       </div>
     </section>
+
+    <TopBanner />
+
   </div>
 </template>

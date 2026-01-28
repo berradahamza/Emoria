@@ -15,44 +15,45 @@ const logout = async () => {
 </script>
 
 <template>
-  <div class="w-full flex items-center justify-between mb-6">
-    <div class="flex items-center gap-2">
-      <!-- Home -->
+  <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md h-14 bg-white border-t border-slate-100 px-6 flex items-center justify-between z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
+
+    <div class="flex items-center gap-6">
       <button
         @click="goHome"
-        class="w-10 h-10 rounded-xl border border-slate-100 bg-white shadow-sm flex items-center justify-center active:scale-95 transition-all"
-        aria-label="Accueil"
-        title="Accueil"
+        class="flex flex-col items-center justify-center active:scale-95 transition-all"
+        :class="router.currentRoute.value.path === '/home' ? 'text-[#6750A3]' : 'text-slate-300'"
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M3 10.5L12 3l9 7.5" stroke="#6750A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M6.5 10.5V21h11V10.5" stroke="#6750A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <path d="M3 10.5L12 3l9 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6.5 10.5V21h11V10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
 
-      <!-- Analyse -->
       <button
         @click="goAnalyse"
-        class="w-10 h-10 rounded-xl border border-slate-100 bg-white shadow-sm flex items-center justify-center active:scale-95 transition-all"
-        aria-label="Analyse"
-        title="Analyse"
+        class="flex flex-col items-center justify-center active:scale-95 transition-all"
+        :class="router.currentRoute.value.path === '/analysis' ? 'text-[#6750A3]' : 'text-slate-300'"
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M4 19V5" stroke="#6750A3" stroke-width="2" stroke-linecap="round"/>
-          <path d="M8 19V11" stroke="#6750A3" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 19V8" stroke="#6750A3" stroke-width="2" stroke-linecap="round"/>
-          <path d="M16 19V14" stroke="#6750A3" stroke-width="2" stroke-linecap="round"/>
-          <path d="M20 19V6" stroke="#6750A3" stroke-width="2" stroke-linecap="round"/>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <path d="M4 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M8 19V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 19V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M16 19V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M20 19V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
 
-    <!-- Déconnexion -->
     <button
       @click="logout"
-      class="px-3 py-2 rounded-xl border border-red-200 bg-white text-red-500 text-sm font-semibold active:scale-95 transition-all"
+      class="text-red-300 hover:text-red-500 active:scale-95 transition-all"
+      title="Déconnexion"
     >
-      Déconnexion
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
     </button>
   </div>
 </template>
