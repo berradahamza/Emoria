@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { useJournalStore } from '../stores/journal'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/style.css'
+import TopBanner from '../components/TopBanner.vue'
 
 import IconTresMal from '../components/icons/IconTresMal.vue'
 import IconMal from '../components/icons/IconMal.vue'
@@ -78,6 +79,7 @@ const SUCCESS_COLOR = '#C46BCF'
 
 <template>
   <div class="min-h-screen bg-white px-6 py-12 font-sans overflow-x-hidden">
+    <TopBanner />
     <header class="mb-10">
       <h1 class="text-3xl text-slate-400">
         Bonjour

@@ -15,9 +15,10 @@ import { useJournalStore } from './journal'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null,          // { uid, email, displayName, photoURL } ou null
-    isReady: false,      // true après le 1er onAuthStateChanged
-    error: null
+    user: null,     // { uid, email, displayName, photoURL } ou null
+    isReady: false, // true après le 1er onAuthStateChanged
+    error: null,
+    _unsub: null    // pour éviter plusieurs listeners
   }),
 
   getters: {
@@ -27,29 +28,50 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     initAuthListener() {
-      onAuthStateChanged(auth, async (user) => {
-        this.user = user
-          ? {
-              uid: user.uid,
-              email: user.email,
-              displayName: user.displayName,
-              photoURL: user.photoURL
+      // déjà initialisé => on renvoie une Promise déjà résolue
+      if (this.isReady) return Promise.resolve(this.user)
+
+      // évite d’empiler des listeners si init est appelé 2 fois
+      if (this._unsub) {
+        return new Promise((resolve) => {
+          const stop = setInterval(() => {
+            if (this.isReady) {
+              clearInterval(stop)
+              resolve(this.user)
             }
-          : null
+          }, 10)
+        })
+      }
 
-        const journal = useJournalStore()
+      return new Promise((resolve) => {
+        this._unsub = onAuthStateChanged(auth, async (fbUser) => {
+          this.user = fbUser
+            ? {
+                uid: fbUser.uid,
+                email: fbUser.email,
+                displayName: fbUser.displayName,
+                photoURL: fbUser.photoURL
+              }
+            : null
 
-        if (user) {
-          // Recharge toutes les journées Firestore au login
-          await journal.loadEntriesForUser(user.uid)
-          // Recharge le formulaire sur la date courante
-          journal.loadDate(journal.selectedDate)
-        } else {
-          journal.savedEntries = {}
-          journal.updateCounter++
-        }
+          const journal = useJournalStore()
 
-        this.isReady = true
+          try {
+            if (fbUser) {
+              // Recharge toutes les journées Firestore au login
+              await journal.loadEntriesForUser(fbUser.uid)
+              // Recharge le formulaire sur la date courante
+              journal.loadDate(journal.selectedDate)
+            } else {
+              journal.savedEntries = {}
+              journal.updateCounter++
+            }
+          } finally {
+            // on passe ready à true QUOI QU’IL ARRIVE
+            this.isReady = true
+            resolve(this.user)
+          }
+        })
       })
     },
 
@@ -57,7 +79,6 @@ export const useAuthStore = defineStore('auth', {
       this.error = null
       try {
         await signInWithEmailAndPassword(auth, email, password)
-        // le chargement Firestore se fera via initAuthListener
       } catch (e) {
         this.error = this._friendlyError(e)
         throw e
@@ -69,7 +90,6 @@ export const useAuthStore = defineStore('auth', {
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password)
 
-        // Crée/merge users/{uid}
         await setDoc(
           doc(db, 'users', cred.user.uid),
           {

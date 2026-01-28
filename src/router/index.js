@@ -5,6 +5,7 @@ import HomeView from '../views/HomeView.vue'
 import StepMoodView from '../views/StepMoodView.vue'
 import StepPositiveView from '../views/StepPositiveView.vue'
 import StepSuccessView from '../views/StepSuccessView.vue'
+import AnalyseView from '../views/AnalyseView.vue'
 
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
@@ -22,19 +23,20 @@ const router = createRouter({
 
     // Private
     { path: '/home', name: 'home', component: HomeView, meta: { requiresAuth: true } },
+    { path: '/analysis', name: 'analysis', component: AnalyseView, meta: { requiresAuth: true } },
+
     { path: '/step-mood', name: 'step-mood', component: StepMoodView, meta: { requiresAuth: true } },
     { path: '/step-positives', name: 'step-positives', component: StepPositiveView, meta: { requiresAuth: true } },
     { path: '/step-success', name: 'step-success', component: StepSuccessView, meta: { requiresAuth: true } }
   ]
 })
 
-// ✅ Guard
-router.beforeEach((to) => {
+// Guard final (anti “déconnexion” au refresh)
+router.beforeEach(async (to) => {
   const authStore = useAuthStore()
 
-  // Attendre que Firebase ait répondu au moins une fois
-  if (!authStore.isReady && to.meta.requiresAuth) {
-    return { name: 'login' } // fallback simple (on améliorera si besoin)
+  if (!authStore.isReady) {
+    await authStore.initAuthListener()
   }
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {

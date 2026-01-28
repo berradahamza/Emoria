@@ -16,10 +16,10 @@ const app = createApp(App)
 
 const pinia = createPinia()
 app.use(pinia)
-
 app.use(router)
 
+// attendre la restauration Firebase (évite redirection login au refresh)
 const authStore = useAuthStore()
-authStore.initAuthListener()
-
-app.mount('#app')
+authStore.initAuthListener().then(() => {
+  app.mount('#app')
+})
