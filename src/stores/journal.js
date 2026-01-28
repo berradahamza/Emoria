@@ -4,6 +4,8 @@ import { db } from '../firebase/config'
 import {
   doc,
   setDoc,
+  getDoc,       // <-- AJOUTÉ
+  updateDoc,    // <-- AJOUTÉ
   getDocs,
   collection,
   serverTimestamp
@@ -23,13 +25,10 @@ export const useJournalStore = defineStore('journal', {
     mood: 3,
     positivesText: '',
     successList: [],
-
-    // clé = "YYYY-MM-DD"
     savedEntries: {},
-
-    // utilisé pour forcer le recalcul / rerender si nécessaire
     updateCounter: 0,
 
+    // Liste par défaut (sera écrasée par celle de l'utilisateur s'il en a une)
     availableTags: [
       { id: 1, name: 'Sport' },
       { id: 2, name: 'Alimentation' },
@@ -84,7 +83,6 @@ export const useJournalStore = defineStore('journal', {
       }
     },
 
-    // Local save (utile si tu veux garder un mode offline)
     saveCurrentEntry() {
       const dateString = this.normalizeDate(this.selectedDate)
       this.savedEntries = {
@@ -113,7 +111,6 @@ export const useJournalStore = defineStore('journal', {
 
       await setDoc(doc(db, 'users', uid, 'entries', dateString), payload, { merge: true })
 
-      // UX instant: on maintient le cache local synchro
       this.savedEntries = { ...this.savedEntries, [dateString]: payload }
       this.updateCounter++
     },
@@ -121,31 +118,76 @@ export const useJournalStore = defineStore('journal', {
     async loadEntriesForUser(uid) {
       if (!uid) return
 
+      // 1. Charger les entrées journalières
       const colRef = collection(db, 'users', uid, 'entries')
       const snap = await getDocs(colRef)
 
-      // Tri côté client sur l'ID (YYYY-MM-DD)
       const entries = {}
       snap.docs
         .sort((a, b) => a.id.localeCompare(b.id))
         .forEach((d) => {
           entries[d.id] = d.data()
         })
-
       this.savedEntries = entries
+
+      // 2. Charger les TAGS personnalisés du user (s'ils existent)
+      try {
+        const userDocRef = doc(db, 'users', uid)
+        const userSnap = await getDoc(userDocRef)
+        if (userSnap.exists()) {
+          const data = userSnap.data()
+          if (Array.isArray(data.tags) && data.tags.length > 0) {
+            this.availableTags = data.tags
+          }
+        }
+      } catch (e) {
+        console.error("Erreur chargement tags", e)
+      }
+
       this.updateCounter++
     },
 
     // ===== Tags & Success =====
-    addNewTag(name) {
+
+    // MODIFIÉ: Ajout du paramètre `uid` pour sauvegarder
+    async addNewTag(name, uid) {
       const clean = String(name ?? '').trim()
       if (!clean) return null
 
       const newTag = { id: Date.now(), name: clean }
       this.availableTags.push(newTag)
 
-      // IMPORTANT: on retourne le tag créé pour que la vue puisse le sélectionner
+      // Sauvegarde Cloud si uid présent
+      if (uid) {
+        try {
+          await updateDoc(doc(db, 'users', uid), {
+            tags: this.availableTags
+          })
+        } catch (e) {
+          console.error("Erreur sauvegarde tag", e)
+        }
+      }
+
       return newTag
+    },
+
+    // AJOUTÉ: Suppression de tag
+    async deleteTag(tagId, uid) {
+      const index = this.availableTags.findIndex(t => t.id === tagId)
+      if (index !== -1) {
+        this.availableTags.splice(index, 1) // Retrait local instantané
+
+        // Mise à jour Cloud
+        if (uid) {
+          try {
+            await updateDoc(doc(db, 'users', uid), {
+              tags: this.availableTags
+            })
+          } catch (e) {
+            console.error("Erreur suppression tag", e)
+          }
+        }
+      }
     },
 
     addSuccess(text, tagName) {
@@ -155,7 +197,6 @@ export const useJournalStore = defineStore('journal', {
       const tag = (tagName ?? null)
       this.successList.push({ text: t, tag })
     },
-
 
     removeSuccess(index) {
       if (index < 0 || index >= this.successList.length) return

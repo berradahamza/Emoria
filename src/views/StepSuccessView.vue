@@ -21,14 +21,23 @@ const showTagInput = async () => {
   tagInputRef.value?.focus()
 }
 
-const handleAddTag = () => {
+const handleAddTag = async () => {
   const clean = newTagName.value.trim()
   if (clean) {
-    const created = store.addNewTag(clean)
-    if (created) selectedTag.value = created // auto-select
+    // On passe l'UID pour sauvegarder le tag dans Firebase
+    const created = await store.addNewTag(clean, authStore.uid)
+    if (created) selectedTag.value = created
     newTagName.value = ''
   }
   isAddingTag.value = false
+}
+
+const handleDeleteTag = async (tag) => {
+  if (selectedTag.value?.id === tag.id) {
+    selectedTag.value = null
+  }
+  // Suppression dans Firebase via l'UID
+  await store.deleteTag(tag.id, authStore.uid)
 }
 
 const handleAddSuccess = () => {
@@ -45,7 +54,6 @@ const handleFinalSave = async () => {
   router.push('/home')
 }
 
-// Fonction retour vers l'étape précédente
 const goBack = () => {
   router.push('/step-positives')
 }
@@ -107,7 +115,8 @@ const goBack = () => {
       <div class="mt-8 px-2">
         <p class="font-bold text-slate-900 mb-4 text-sm ml-2 italic text-slate-400">Associer un Tag :</p>
 
-        <div class="flex flex-wrap gap-2 items-center">
+        <div class="flex flex-wrap gap-3 items-center">
+
           <button
             v-if="!isAddingTag"
             @click="showTagInput"
@@ -127,19 +136,32 @@ const goBack = () => {
             />
           </div>
 
-          <button
+          <div
             v-for="tag in store.availableTags"
             :key="tag.id"
-            @click="selectedTag = tag"
-            :class="[
-              'px-5 py-2 rounded-full border text-xs font-bold transition-all duration-200',
-              selectedTag?.id === tag.id
-                ? 'bg-purple-400 border-purple-400 text-white shadow-lg'
-                : 'border-purple-200 text-purple-300 bg-white'
-            ]"
+            class="relative group"
           >
-            {{ tag.name }}
-          </button>
+            <button
+              @click="selectedTag = tag"
+              :class="[
+                'px-5 py-2 rounded-full border text-xs font-bold transition-all duration-200',
+                selectedTag?.id === tag.id
+                  ? 'bg-purple-400 border-purple-400 text-white shadow-lg'
+                  : 'border-purple-200 text-purple-300 bg-white'
+              ]"
+            >
+              {{ tag.name }}
+            </button>
+
+            <button
+              @click.stop="handleDeleteTag(tag)"
+              class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-red-100 text-red-500 border border-red-200 flex items-center justify-center text-[9px] shadow-sm hover:bg-red-200 active:scale-90"
+              title="Supprimer ce tag"
+            >
+              ✕
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
