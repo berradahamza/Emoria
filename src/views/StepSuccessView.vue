@@ -1,4 +1,3 @@
-<!-- src/views/StepSuccessView.vue -->
 <script setup>
 import { ref, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
@@ -45,24 +44,51 @@ const handleFinalSave = async () => {
   await store.saveCurrentEntryToCloud(authStore.uid)
   router.push('/home')
 }
+
+// Fonction retour vers l'étape précédente
+const goBack = () => {
+  router.push('/step-positives')
+}
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-between min-h-screen px-8 py-12 bg-white overflow-y-auto">
-    <div class="w-full flex justify-end text-slate-300 text-sm font-medium">3/3</div>
 
-    <div class="w-full flex-1">
+    <div class="w-full flex justify-between items-center">
+      <button
+        @click="goBack"
+        class="p-2 -ml-2 text-slate-400 hover:text-slate-600 active:scale-95 transition-all"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <div class="text-slate-300 text-sm font-medium">3/3</div>
+    </div>
+
+    <div class="w-full flex-1 mt-4">
       <h1 class="text-2xl font-bold text-center text-slate-900 mb-8">
         Quelles sont tes <span class="text-[#C46BCF]">réussites</span><br> du jour ? 💪
       </h1>
 
-      <div class="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2">
+      <div class="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
         <div
           v-for="(item, index) in store.successList"
           :key="index"
-          class="p-5 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-sm"
+          class="relative p-5 pr-10 bg-slate-50 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md"
         >
-          <p class="text-slate-700 font-semibold text-lg">{{ item.text }}</p>
+          <button
+            @click="store.removeSuccess(index)"
+            class="absolute top-4 right-4 text-red-300 hover:text-red-500 hover:bg-red-50 rounded-full p-1 transition-all active:scale-90"
+            title="Supprimer cette réussite"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <p class="text-slate-700 font-semibold text-lg leading-snug">{{ item.text }}</p>
           <span
             v-if="item.tag"
             class="text-xs text-purple-400 font-bold mt-2 block uppercase tracking-wider"
@@ -75,7 +101,7 @@ const handleFinalSave = async () => {
       <textarea
         v-model="currentSuccess"
         placeholder="Faire 30 min de vélo"
-        class="w-full h-32 p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm outline-none resize-none placeholder-slate-200 text-slate-600 focus:ring-2 focus:ring-purple-50 transition-all"
+        class="w-full h-32 p-6 bg-white rounded-xl border border-slate-100 shadow-sm outline-none resize-none placeholder-slate-200 text-slate-600 focus:ring-2 focus:ring-purple-50 transition-all"
       ></textarea>
 
       <div class="mt-8 px-2">

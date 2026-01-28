@@ -45,7 +45,8 @@ const todayIsFilled = computed(() => {
   return hasMood && hasPositives && hasSuccess
 })
 
-const pickerModelValue = computed(() => (todayIsFilled.value ? null : todayYMD.value))
+// MODIF 1 : On met null pour ne jamais avoir le cercle de sélection par défaut
+const pickerModelValue = null
 
 const goToTunnel = (date = new Date()) => {
   const dateString = date instanceof Date ? toYMDLocal(date) : String(date)
@@ -86,7 +87,7 @@ const SUCCESS_COLOR = '#C46BCF'
       <button
         v-if="!todayIsFilled"
         @click="goToTunnel(new Date())"
-        class="w-full px-5 py-4 bg-white border border-white rounded-xl shadow-sm flex items-center justify-between active:scale-95 transition-all"
+        class="w-full px-5 py-4 bg-[#FAF9FE] border border-purple-100 rounded-xl shadow-sm flex items-center justify-between active:scale-95 transition-all"
       >
         <span class="text-[#6750A3] font-semibold text-base">
           Compléter ma journée
@@ -100,7 +101,7 @@ const SUCCESS_COLOR = '#C46BCF'
       <button
         v-else
         @click="goToTunnel(new Date())"
-        class="w-full px-5 py-4 bg-white border border-white rounded-xl shadow-sm flex items-center justify-between active:scale-95 transition-all"
+        class="w-full px-5 py-4 bg-[#FAF9FE] border border-purple-100 rounded-xl shadow-sm flex items-center justify-between active:scale-95 transition-all"
       >
         <span class="text-[#6750A3] font-semibold text-base">
           Bravo, tu as complété ta journée
@@ -115,7 +116,7 @@ const SUCCESS_COLOR = '#C46BCF'
     <section>
       <h2 class="text-xl font-bold text-slate-900 mb-6">Mon calendrier</h2>
 
-      <div class="bg-white rounded-xl p-4 border border-white shadow-sm">
+      <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
         <DatePicker
           :key="store.updateCounter"
           :model-value="pickerModelValue"
@@ -124,33 +125,34 @@ const SUCCESS_COLOR = '#C46BCF'
           expanded
           transparent
           borderless
+          trim-weeks
           :attributes="store.calendarAttributes"
         >
           <template #day-content="{ day, attributes }">
-            <div class="flex flex-col items-center justify-center h-full w-full relative min-h-[70px]">
-              <span class="text-[10px] font-bold text-slate-300 absolute top-1">
+            <div class="flex flex-col items-center justify-start w-full h-full min-h-[60px] cursor-pointer"
+                 @click="goToTunnel(day.date)">
+
+              <span class="text-xs font-semibold text-slate-400 mb-0.5">
                 {{ day.day }}
               </span>
 
-              <div
-                class="flex flex-col items-center justify-center w-full h-full cursor-pointer gap-1"
-                @click="goToTunnel(day.date)"
-              >
+              <div class="flex-1 flex flex-col items-center justify-start">
+
                 <template v-if="attributes?.length > 0 && attributes[0].customData?.mood">
                   <component
                     :is="moodIcons[attributes[0].customData.mood]"
-                    class="w-6 h-6 object-contain"
+                    class="w-7 h-7 object-contain drop-shadow-sm"
                   />
 
                   <div class="flex items-center justify-center gap-1 mt-0.5">
                     <span
                       v-if="String(attributes[0].customData.positivesText || '').trim().length > 0"
-                      class="w-2 h-2 rounded-full"
+                      class="w-1.5 h-1.5 rounded-full"
                       :style="{ backgroundColor: POSITIVE_COLOR }"
                     />
                     <span
                       v-if="Array.isArray(attributes[0].customData.successList) && attributes[0].customData.successList.length > 0"
-                      class="w-2 h-2 rounded-full"
+                      class="w-1.5 h-1.5 rounded-full"
                       :style="{ backgroundColor: SUCCESS_COLOR }"
                     />
                   </div>
@@ -158,13 +160,12 @@ const SUCCESS_COLOR = '#C46BCF'
 
                 <div
                   v-else
-                  class="w-9 h-9 rounded-full border border-dashed border-slate-200
-                        bg-slate-50/40
-                        flex items-center justify-center
-                        text-slate-300
-                        transition-all"
+                  class="w-7 h-7 rounded-full flex items-center justify-center mt-0.5 transition-all"
+                  :class="day.id === todayYMD
+                    ? 'bg-[#6750A3] text-white shadow-md shadow-purple-200'
+                    : 'border border-dashed border-slate-200 bg-slate-50/50 text-slate-300'"
                 >
-                  <span class="text-xl font-light leading-none">+</span>
+                  <span class="text-lg font-light leading-none pb-0.5">+</span>
                 </div>
 
               </div>

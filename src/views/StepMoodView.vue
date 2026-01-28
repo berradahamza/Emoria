@@ -1,6 +1,6 @@
-<!-- src/views/StepMoodView.vue -->
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useJournalStore } from '../stores/journal'
 import IconTresMal from '../components/icons/IconTresMal.vue'
 import IconMal from '../components/icons/IconMal.vue'
@@ -9,6 +9,7 @@ import IconBien from '../components/icons/IconBien.vue'
 import IconTresBien from '../components/icons/IconTresBien.vue'
 import BoutonContinuer from '../components/buttons/boutonContinuer.vue'
 
+const router = useRouter()
 const store = useJournalStore()
 
 const moods = [
@@ -24,32 +25,46 @@ const currentMood = computed(() => moods.find(m => m.id === Number(store.mood)))
 const moodHaloClass = computed(() => {
   const m = Number(store.mood)
 
-  if (m === 1) return 'bg-[#FDE2E2]' // Très mal → rouge clair
-  if (m === 2) return 'bg-[#FFE3D4]' // Mal → orange clair
-  if (m === 3) return 'bg-[#FFF3CC]' // Moyen → jaune clair
-  if (m === 4) return 'bg-[#E6F4EA]' // Bien → green clair
-  if (m === 5) return 'bg-[#CDEED8]' // Très bien → dark green
+  if (m === 1) return 'bg-[#FDE2E2]'
+  if (m === 2) return 'bg-[#FFE3D4]'
+  if (m === 3) return 'bg-[#FFF3CC]'
+  if (m === 4) return 'bg-[#E6F4EA]'
+  if (m === 5) return 'bg-[#CDEED8]'
 
   return 'bg-[#E6F4EA]'
 })
 
+const goHome = () => {
+  router.push('/home')
+}
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-between min-h-screen px-8 py-12 bg-white">
-    <div class="w-full flex justify-end text-slate-300 text-sm font-medium">1/3</div>
 
-    <h1 class="text-2xl font-bold text-center text-slate-900 leading-tight">
+    <div class="w-full flex justify-between items-center">
+      <button
+        @click="goHome"
+        class="p-2 -ml-2 text-slate-400 hover:text-slate-600 active:scale-95 transition-all"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <div class="text-slate-300 text-sm font-medium">1/3</div>
+    </div>
+
+    <h1 class="text-2xl font-bold text-center text-slate-900 leading-tight mb-10">
       Tu t’es <span class="text-[#6750A3]">senti(e)</span> comment <br>
       aujourd’hui ?
     </h1>
 
-    <!-- halo dynamique -->
     <div
       class="relative flex items-center justify-center w-72 h-72 rounded-full transition-colors duration-300"
       :class="moodHaloClass"
     >
-      <component :is="currentMood.icon" class="w-32 h-32 scale-150 transition-all duration-300" />
+      <component :is="currentMood.icon" class="w-32 h-32 transition-all duration-300" />
     </div>
 
     <div class="w-full flex flex-col items-center gap-8">
