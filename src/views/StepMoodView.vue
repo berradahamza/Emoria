@@ -1,6 +1,7 @@
+<!-- src/views/StepMoodView.vue -->
 <script setup>
 import { computed } from 'vue'
-import { useJournalStore } from '../stores/journal' // Import du store
+import { useJournalStore } from '../stores/journal'
 import IconTresMal from '../components/icons/IconTresMal.vue'
 import IconMal from '../components/icons/IconMal.vue'
 import IconMoyen from '../components/icons/IconMoyen.vue'
@@ -19,6 +20,19 @@ const moods = [
 ]
 
 const currentMood = computed(() => moods.find(m => m.id === Number(store.mood)))
+
+const moodHaloClass = computed(() => {
+  const m = Number(store.mood)
+
+  if (m === 1) return 'bg-[#FDE2E2]' // Très mal → rouge clair
+  if (m === 2) return 'bg-[#FFE3D4]' // Mal → orange clair
+  if (m === 3) return 'bg-[#FFF3CC]' // Moyen → jaune clair
+  if (m === 4) return 'bg-[#E6F4EA]' // Bien → green clair
+  if (m === 5) return 'bg-[#CDEED8]' // Très bien → dark green
+
+  return 'bg-[#E6F4EA]'
+})
+
 </script>
 
 <template>
@@ -26,15 +40,21 @@ const currentMood = computed(() => moods.find(m => m.id === Number(store.mood)))
     <div class="w-full flex justify-end text-slate-300 text-sm font-medium">1/3</div>
 
     <h1 class="text-2xl font-bold text-center text-slate-900 leading-tight">
-      Tu t’es <span class="text-[--color-emoria-purple]">senti(e)</span> comment <br> aujourd’hui ?
+      Tu t’es <span class="text-[#6750A3]">senti(e)</span> comment <br>
+      aujourd’hui ?
     </h1>
 
-    <div class="relative flex items-center justify-center w-72 h-72 rounded-full bg-[#F3F3FF]">
+    <!-- halo dynamique -->
+    <div
+      class="relative flex items-center justify-center w-72 h-72 rounded-full transition-colors duration-300"
+      :class="moodHaloClass"
+    >
       <component :is="currentMood.icon" class="w-32 h-32 scale-150 transition-all duration-300" />
     </div>
 
     <div class="w-full flex flex-col items-center gap-8">
       <span class="text-xl font-bold text-[--color-emoria-purple]">{{ currentMood.label }}</span>
+
       <div class="w-full px-2">
         <input type="range" min="1" max="5" step="1" v-model="store.mood" class="custom-slider" />
         <div class="flex justify-between w-full mt-4 text-[10px] text-slate-300 font-bold uppercase tracking-widest">
@@ -42,6 +62,7 @@ const currentMood = computed(() => moods.find(m => m.id === Number(store.mood)))
           <span>Très bien</span>
         </div>
       </div>
+
       <router-link to="/step-positives" class="w-full flex justify-center hover:opacity-90 active:scale-95 transition-all">
         <BoutonContinuer />
       </router-link>

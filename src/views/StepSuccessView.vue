@@ -23,8 +23,10 @@ const showTagInput = async () => {
 }
 
 const handleAddTag = () => {
-  if (newTagName.value.trim()) {
-    store.addNewTag(newTagName.value.trim())
+  const clean = newTagName.value.trim()
+  if (clean) {
+    const created = store.addNewTag(clean)
+    if (created) selectedTag.value = created // auto-select
     newTagName.value = ''
   }
   isAddingTag.value = false
@@ -38,7 +40,6 @@ const handleAddSuccess = () => {
   }
 }
 
-// Sauvegarde finale Firestore
 const handleFinalSave = async () => {
   handleAddSuccess()
   await store.saveCurrentEntryToCloud(authStore.uid)
@@ -52,14 +53,14 @@ const handleFinalSave = async () => {
 
     <div class="w-full flex-1">
       <h1 class="text-2xl font-bold text-center text-slate-900 mb-8">
-        Quelles sont tes <span class="text-purple-400">réussites</span> <br> du jour ? 💪
+        Quelles sont tes <span class="text-[#C46BCF]">réussites</span><br> du jour ? 💪
       </h1>
 
       <div class="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2">
         <div
           v-for="(item, index) in store.successList"
           :key="index"
-          class="p-5 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-sm animate-in slide-in-from-right-4 transition-all"
+          class="p-5 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-sm"
         >
           <p class="text-slate-700 font-semibold text-lg">{{ item.text }}</p>
           <span
@@ -79,6 +80,7 @@ const handleFinalSave = async () => {
 
       <div class="mt-8 px-2">
         <p class="font-bold text-slate-900 mb-4 text-sm ml-2 italic text-slate-400">Associer un Tag :</p>
+
         <div class="flex flex-wrap gap-2 items-center">
           <button
             v-if="!isAddingTag"
@@ -119,16 +121,16 @@ const handleFinalSave = async () => {
     <div class="w-full flex flex-col gap-3 mt-8">
       <button
         @click="handleAddSuccess"
-        class="w-full py-5 bg-white border border-slate-100 text-slate-400 rounded-3xl font-bold active:bg-slate-50 transition-all"
+        class="w-full py-5 bg-white border border-slate-200 text-slate-400 font-bold rounded-xl active:bg-slate-50 transition-all"
       >
-        Enregistrer la réussite
+        Ajouter une réussite
       </button>
 
       <button
         @click="handleFinalSave"
-        class="w-full py-5 bg-[#6B46C1] text-white rounded-3xl font-bold text-lg shadow-xl shadow-purple-100 active:scale-95 transition-all"
+        class="w-full py-5 bg-[#6B46C1] text-white font-bold text-lg rounded-xl shadow-xl shadow-purple-100 active:scale-95 transition-all"
       >
-        Enregistrer le bilan
+        Enregistrer le bilan de ma journée
       </button>
     </div>
   </div>

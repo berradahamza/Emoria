@@ -139,8 +139,13 @@ export const useJournalStore = defineStore('journal', {
     // ===== Tags & Success =====
     addNewTag(name) {
       const clean = String(name ?? '').trim()
-      if (!clean) return
-      this.availableTags.push({ id: Date.now(), name: clean })
+      if (!clean) return null
+
+      const newTag = { id: Date.now(), name: clean }
+      this.availableTags.push(newTag)
+
+      // IMPORTANT: on retourne le tag créé pour que la vue puisse le sélectionner
+      return newTag
     },
 
     addSuccess(text, tagName) {
