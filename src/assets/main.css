@@ -112,3 +112,40 @@ body {
   overflow: visible;
   isolation: isolate;
 }
+
+/* v-calendar dark mode overrides */
+.dark .vc-header .vc-title {
+  color: var(--color-heading);
+}
+
+.dark .vc-weekday {
+  color: var(--color-muted);
+}
+
+.dark .vc-nav-arrow,
+.dark .vc-arrow {
+  color: var(--color-muted);
+}
+
+.dark .vc-nav-arrow:hover,
+.dark .vc-arrow:hover {
+  color: var(--color-heading);
+  background-color: var(--color-surface-alt);
+}
+
+.dark .vc-nav-title {
+  color: var(--color-heading);
+}
+
+.dark .vc-nav-item {
+  color: var(--color-body);
+}
+
+.dark .vc-nav-item.is-active {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.dark .vc-nav-item:hover {
+  background-color: var(--color-surface-alt);
+}

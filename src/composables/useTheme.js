@@ -1,20 +1,15 @@
 // src/composables/useTheme.js
 import { ref, watchEffect } from "vue";
 
-const isDark = ref(false);
+const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-// Initialise from localStorage + system preference
-const stored = localStorage.getItem("emoria-theme");
-if (stored === "dark") {
-  isDark.value = true;
-} else if (stored === "light") {
-  isDark.value = false;
-} else {
-  // Follow system preference by default
-  isDark.value = window.matchMedia("(prefers-color-scheme: dark)").matches;
-}
+// Always start from system preference
+const isDark = ref(mediaQuery.matches);
 
-// Sync <html> class + localStorage
+// Track whether the user manually toggled (in-memory only, resets on reload)
+let manualOverride = false;
+
+// Sync <html> class (no localStorage — always follows system on reload)
 watchEffect(() => {
   const root = document.documentElement;
   if (isDark.value) {
@@ -22,11 +17,19 @@ watchEffect(() => {
   } else {
     root.classList.remove("dark");
   }
-  localStorage.setItem("emoria-theme", isDark.value ? "dark" : "light");
 });
+
+// Listen for system theme changes — follow them unless manually overridden
+const handleSystemChange = (e) => {
+  // When system changes, always follow it (reset manual override)
+  manualOverride = false;
+  isDark.value = e.matches;
+};
+mediaQuery.addEventListener("change", handleSystemChange);
 
 export function useTheme() {
   const toggle = () => {
+    manualOverride = true;
     isDark.value = !isDark.value;
   };
 
