@@ -16,7 +16,7 @@ const filteredGroups = computed(() => {
   return store.allSuccessesGroupedByDate
     .map((group) => {
       let filtered;
-      if (selectedFilterTag.value === '__none__') {
+      if (selectedFilterTag.value === "__none__") {
         filtered = group.successes.filter((s) => !s.tag);
       } else if (selectedFilterTag.value) {
         filtered = group.successes.filter((s) => s.tag === selectedFilterTag.value);

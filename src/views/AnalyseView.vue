@@ -90,8 +90,13 @@ const last7Successes = computed(() => {
   for (const { ymd, entry } of last7Entries.value) {
     const list = Array.isArray(entry?.successList) ? entry.successList : [];
     for (const item of list) {
-      if (selectedFilterTag.value === '__none__' && item.tag) continue;
-      if (selectedFilterTag.value && selectedFilterTag.value !== '__none__' && item.tag !== selectedFilterTag.value) continue;
+      if (selectedFilterTag.value === "__none__" && item.tag) continue;
+      if (
+        selectedFilterTag.value &&
+        selectedFilterTag.value !== "__none__" &&
+        item.tag !== selectedFilterTag.value
+      )
+        continue;
       result.push({ date: ymd, text: item.text, tag: item.tag });
     }
   }
