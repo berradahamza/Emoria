@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "emoria2-3de35"
+    "default": "emoria2-3de35",
+    "production": "em0ria"
   }
 }

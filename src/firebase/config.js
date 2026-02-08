@@ -3,13 +3,16 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, enableMultiTabIndexedDbPersistence } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
+// Use Vite environment variables when available. Copy `.env.example` to
+// `.env.local` and fill values. Vite exposes vars via `import.meta.env`.
 const firebaseConfig = {
-  apiKey: "AIzaSyAHmrIqrrWplLgF696F_usEzgUQc9V52Pg",
-  authDomain: "emoria2-3de35.firebaseapp.com",
-  projectId: "emoria2-3de35",
-  storageBucket: "emoria2-3de35.firebasestorage.app",
-  messagingSenderId: "899425997371",
-  appId: "1:899425997371:web:f919228294d02706d8421e",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID || "",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -20,7 +23,7 @@ export const auth = getAuth(app);
 // ✅ Offline persistence (IndexedDB) + multi-tab
 // - Évite l'erreur "exclusive access" quand plusieurs tabs sont ouverts
 // - Si l'environnement ne le supporte pas, on ignore proprement
-enableMultiTabIndexedDbPersistence(db).catch((err) => {
+enableMultiTabIndexedDbPersistence(db).catch(() => {
   // failed-precondition / unimplemented: pas grave -> Firestore bascule en mémoire
   // (ex: navigateur/onglets/environnement non compatibles)
 });
