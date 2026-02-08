@@ -90,7 +90,8 @@ const last7Successes = computed(() => {
   for (const { ymd, entry } of last7Entries.value) {
     const list = Array.isArray(entry?.successList) ? entry.successList : [];
     for (const item of list) {
-      if (selectedFilterTag.value && item.tag !== selectedFilterTag.value) continue;
+      if (selectedFilterTag.value === '__none__' && item.tag) continue;
+      if (selectedFilterTag.value && selectedFilterTag.value !== '__none__' && item.tag !== selectedFilterTag.value) continue;
       result.push({ date: ymd, text: item.text, tag: item.tag });
     }
   }
@@ -163,6 +164,17 @@ const formatDateShort = (ymd) => {
           ]"
         >
           {{ tag }}
+        </button>
+        <button
+          @click="toggleFilterTag('__none__')"
+          :class="[
+            'px-4 py-1.5 rounded-full border text-xs font-bold transition-all duration-200',
+            selectedFilterTag === '__none__'
+              ? 'bg-muted border-muted text-white shadow-lg'
+              : 'border-line-strong text-muted bg-surface',
+          ]"
+        >
+          Sans tag
         </button>
         <button
           v-if="selectedFilterTag"

@@ -45,7 +45,7 @@ const onRegister = async () => {
               type="email"
               autocomplete="email"
               placeholder="ex: marion@email.com"
-              class="w-full p-4 rounded-3xl bg-input-bg border border-line outline-none focus:ring-2 focus:ring-accent-faint focus:border-accent-light transition-all"
+              class="w-full p-4 rounded-3xl bg-input-bg border border-line outline-none text-heading placeholder-dim focus:ring-2 focus:ring-accent-faint focus:border-accent-light transition-all"
             />
           </div>
 
@@ -56,7 +56,7 @@ const onRegister = async () => {
               type="password"
               autocomplete="new-password"
               placeholder="6 caractères minimum"
-              class="w-full p-4 rounded-3xl bg-input-bg border border-line outline-none focus:ring-2 focus:ring-accent-faint focus:border-accent-light transition-all"
+              class="w-full p-4 rounded-3xl bg-input-bg border border-line outline-none text-heading placeholder-dim focus:ring-2 focus:ring-accent-faint focus:border-accent-light transition-all"
             />
           </div>
 

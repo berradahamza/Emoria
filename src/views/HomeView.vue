@@ -158,7 +158,9 @@ const SUCCESS_COLOR = "var(--color-accent-pink)";
                 class="flex-1 flex flex-col items-center justify-start"
               >
                 <template v-if="attributes?.length > 0 && attributes[0].customData?.mood">
-                  <div class="w-7 h-7 rounded-full bg-white flex items-center justify-center relative z-10">
+                  <div
+                    class="w-7 h-7 rounded-full bg-white flex items-center justify-center relative z-10"
+                  >
                     <component
                       :is="moodIcons[attributes[0].customData.mood]"
                       class="w-7 h-7 object-contain"

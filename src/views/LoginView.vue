@@ -56,7 +56,7 @@ const onGoogle = async () => {
               type="email"
               autocomplete="email"
               placeholder="ex: marion@email.com"
-              class="w-full p-4 rounded-3xl bg-input-bg border border-line outline-none focus:ring-2 focus:ring-accent-faint focus:border-accent-light transition-all"
+              class="w-full p-4 rounded-3xl bg-input-bg border border-line outline-none text-heading placeholder-dim focus:ring-2 focus:ring-accent-faint focus:border-accent-light transition-all"
             />
           </div>
 
@@ -67,7 +67,7 @@ const onGoogle = async () => {
               type="password"
               autocomplete="current-password"
               placeholder="••••••••"
-              class="w-full p-4 rounded-3xl bg-input-bg border border-line outline-none focus:ring-2 focus:ring-accent-faint focus:border-accent-light transition-all"
+              class="w-full p-4 rounded-3xl bg-input-bg border border-line outline-none text-heading placeholder-dim focus:ring-2 focus:ring-accent-faint focus:border-accent-light transition-all"
             />
           </div>
 

@@ -15,9 +15,14 @@ const toggleFilterTag = (tag) => {
 const filteredGroups = computed(() => {
   return store.allSuccessesGroupedByDate
     .map((group) => {
-      const filtered = selectedFilterTag.value
-        ? group.successes.filter((s) => s.tag === selectedFilterTag.value)
-        : group.successes;
+      let filtered;
+      if (selectedFilterTag.value === '__none__') {
+        filtered = group.successes.filter((s) => !s.tag);
+      } else if (selectedFilterTag.value) {
+        filtered = group.successes.filter((s) => s.tag === selectedFilterTag.value);
+      } else {
+        filtered = group.successes;
+      }
       return { date: group.date, successes: filtered };
     })
     .filter((group) => group.successes.length > 0);
@@ -80,6 +85,17 @@ const formatDate = (ymd) => {
         ]"
       >
         {{ tag }}
+      </button>
+      <button
+        @click="toggleFilterTag('__none__')"
+        :class="[
+          'px-4 py-1.5 rounded-full border text-xs font-bold transition-all duration-200',
+          selectedFilterTag === '__none__'
+            ? 'bg-muted border-muted text-white shadow-lg'
+            : 'border-line-strong text-muted bg-surface',
+        ]"
+      >
+        Sans tag
       </button>
       <button
         v-if="selectedFilterTag"
