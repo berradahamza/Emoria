@@ -145,7 +145,7 @@ const SUCCESS_COLOR = "var(--color-accent-pink)";
         >
           <template #day-content="{ day, attributes }">
             <div
-              class="flex flex-col items-center justify-start w-full h-full min-h-[60px]"
+              class="flex flex-col items-center justify-start w-full h-full min-h-[60px] isolate"
               :class="day.id <= todayYMD ? 'cursor-pointer' : 'cursor-default'"
               @click="day.id <= todayYMD && goToTunnel(day.date)"
             >
@@ -158,12 +158,14 @@ const SUCCESS_COLOR = "var(--color-accent-pink)";
                 class="flex-1 flex flex-col items-center justify-start"
               >
                 <template v-if="attributes?.length > 0 && attributes[0].customData?.mood">
-                  <component
-                    :is="moodIcons[attributes[0].customData.mood]"
-                    class="w-7 h-7 object-contain drop-shadow-sm"
-                  />
+                  <div class="w-7 h-7 rounded-full bg-white flex items-center justify-center relative z-10">
+                    <component
+                      :is="moodIcons[attributes[0].customData.mood]"
+                      class="w-7 h-7 object-contain"
+                    />
+                  </div>
 
-                  <div class="flex items-center justify-center gap-1 mt-0.5">
+                  <div class="flex items-center justify-center gap-1 mt-0.5 relative z-10">
                     <span
                       v-if="String(attributes[0].customData.positivesText || '').trim().length > 0"
                       class="w-1.5 h-1.5 rounded-full"
@@ -182,11 +184,11 @@ const SUCCESS_COLOR = "var(--color-accent-pink)";
 
                 <div
                   v-else
-                  class="w-7 h-7 rounded-full flex items-center justify-center mt-0.5 transition-all"
+                  class="w-7 h-7 rounded-full flex items-center justify-center mt-0.5 transition-all relative z-0"
                   :class="
                     day.id === todayYMD
-                      ? 'bg-accent-soft text-white shadow-md shadow-accent-light'
-                      : 'border border-dashed border-line-strong bg-surface-alt/50 text-dim'
+                      ? 'bg-accent-soft text-white shadow-sm'
+                      : 'border border-dashed border-line-strong bg-surface-alt text-dim'
                   "
                 >
                   <span class="text-lg font-light leading-none pb-0.5">+</span>

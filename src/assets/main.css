@@ -106,3 +106,9 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+/* Ensure calendar day cells don't clip or stack incorrectly */
+.vc-day {
+  overflow: visible;
+  isolation: isolate;
+}
