@@ -1,8 +1,106 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ───────────────────────────────────────────────
+   DESIGN TOKENS — Emoria Theme System
+   All components use semantic tokens.
+   Dark mode is handled by swapping these values.
+   ─────────────────────────────────────────────── */
+
 @theme {
-  --color-emoria-purple: #6B46C1;
+  /* Canvas (body / outermost bg) */
+  --color-canvas: #f8fafc;
+
+  /* Surfaces */
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8fafc;
+  --color-surface-raised: #faf9fe;
+
+  /* Text */
+  --color-heading: #0f172a;
+  --color-body: #475569;
+  --color-muted: #94a3b8;
+  --color-dim: #cbd5e1;
+
+  /* Borders */
+  --color-line: #f1f5f9;
+  --color-line-strong: #e2e8f0;
+
+  /* Input */
+  --color-input-bg: #f8fafc;
+
+  /* Primary accent (purple) */
+  --color-accent: #6B46C1;
+  --color-accent-soft: #6750A3;
+  --color-accent-vivid: #a78bfa;
+  --color-accent-muted: #c4b5fd;
+  --color-accent-faint: #ede9fe;
+  --color-accent-light: #ddd6fe;
+  --color-accent-glow: #ede9fe;
+
+  /* Pink accent */
+  --color-accent-pink: #C46BCF;
+
+  /* Blue accent */
+  --color-accent-blue: #4F6CCF;
+
+  /* Danger (red) */
+  --color-danger: #ef4444;
+  --color-danger-dim: #fca5a5;
+  --color-danger-bg: #fee2e2;
+  --color-danger-border: #fecaca;
+  --color-danger-hover: #fecaca;
+
+  /* Slider */
+  --color-slider-track: #EBEBFF;
+  --color-slider-thumb: #ffffff;
 }
+
+/* ── Dark mode overrides ── */
+.dark {
+  --color-canvas: #020617;
+
+  --color-surface: #0f172a;
+  --color-surface-alt: #1e293b;
+  --color-surface-raised: #1a1530;
+
+  --color-heading: #f1f5f9;
+  --color-body: #94a3b8;
+  --color-muted: #64748b;
+  --color-dim: #475569;
+
+  --color-line: #1e293b;
+  --color-line-strong: #334155;
+
+  --color-input-bg: #1e293b;
+
+  --color-accent: #8b6fdf;
+  --color-accent-soft: #9b8bc9;
+  --color-accent-vivid: #a78bfa;
+  --color-accent-muted: #7c5cbf;
+  --color-accent-faint: #2d2257;
+  --color-accent-light: #3b2d63;
+  --color-accent-glow: #1a1530;
+
+  --color-accent-pink: #d48fe0;
+  --color-accent-blue: #7b9cef;
+
+  --color-danger: #f87171;
+  --color-danger-dim: #ef4444;
+  --color-danger-bg: #2d0f0f;
+  --color-danger-border: #5c1414;
+  --color-danger-hover: #7f1d1d;
+
+  --color-slider-track: #2d2257;
+  --color-slider-thumb: #1e293b;
+}
+
+body {
+  background-color: var(--color-canvas);
+  transition: background-color 0.2s ease;
+}
+
 .vc-day-content {
   display: flex;
   align-items: center;

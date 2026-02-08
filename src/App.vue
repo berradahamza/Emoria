@@ -1,17 +1,7 @@
 <template>
-  <main class="min-h-screen max-w-md mx-auto bg-white shadow-sm overflow-x-hidden">
+  <main
+    class="min-h-screen max-w-md mx-auto bg-surface shadow-sm overflow-x-hidden transition-colors duration-200"
+  >
     <RouterView />
   </main>
 </template>
-
-<style>
-@import "tailwindcss";
-
-@theme {
-  --color-emoria-purple: #6B46C1; /* Couleur du Figma */
-}
-
-body {
-  @apply bg-slate-50;
-}
-</style>
