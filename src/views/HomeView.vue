@@ -93,40 +93,6 @@ const SUCCESS_COLOR = "var(--color-accent-pink)";
       </h1>
     </header>
 
-    <section class="mb-12">
-      <h2 class="text-xl font-bold text-heading mb-4">Ma journée</h2>
-
-      <button
-        v-if="!todayIsFilled"
-        @click="goToTunnel(new Date())"
-        class="w-full px-5 py-4 bg-surface-raised border border-accent-faint rounded-xl shadow-sm flex items-center justify-between active:scale-95 transition-all"
-      >
-        <span class="text-accent-soft font-semibold text-base"> Compléter ma journée </span>
-
-        <div
-          class="w-10 h-10 rounded-full border border-dashed border-accent-light flex items-center justify-center text-accent-muted"
-        >
-          <span class="text-2xl font-light leading-none">+</span>
-        </div>
-      </button>
-
-      <button
-        v-else
-        @click="goToTunnel(new Date())"
-        class="w-full px-5 py-4 bg-surface-raised border border-accent-faint rounded-xl shadow-sm flex items-center justify-between active:scale-95 transition-all"
-      >
-        <span class="text-accent-soft font-semibold text-base">
-          Bravo, tu as complété ta journée
-        </span>
-
-        <div
-          class="w-10 h-10 rounded-full border border-accent-light flex items-center justify-center text-accent-soft"
-        >
-          <span class="text-lg leading-none">👏</span>
-        </div>
-      </button>
-    </section>
-
     <section>
       <h2 class="text-xl font-bold text-heading mb-6">Mon calendrier</h2>
 
