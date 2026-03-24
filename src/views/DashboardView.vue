@@ -273,7 +273,9 @@ function barPercent(count) {
               />
             </svg>
           </div>
-          <div class="flex flex-col justify-between text-[9px] text-dim font-bold shrink-0 py-0.5 tabular-nums">
+          <div
+            class="flex flex-col justify-between text-[9px] text-dim font-bold shrink-0 py-0.5 tabular-nums"
+          >
             <span>5 <span class="font-medium">Très bien</span></span>
             <span>4</span>
             <span>3</span>
