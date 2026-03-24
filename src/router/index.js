@@ -25,7 +25,12 @@ const router = createRouter({
 
     // Private
     { path: "/home", name: "home", component: HomeView, meta: { requiresAuth: true } },
-    { path: "/dashboard", name: "dashboard", component: DashboardView, meta: { requiresAuth: true } },
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: DashboardView,
+      meta: { requiresAuth: true },
+    },
 
     {
       path: "/step-mood",

@@ -95,7 +95,7 @@ const sparklinePath = computed(() => {
   const pts = moodTrend.value;
   if (pts.length < 2) return "";
   const w = 280;
-  const h = 56;
+  const h = 100;
   const pad = 8;
   const innerW = w - pad * 2;
   const innerH = h - pad * 2;
@@ -113,7 +113,7 @@ const sparklineDots = computed(() => {
   const pts = moodTrend.value;
   if (pts.length < 2) return [];
   const w = 280;
-  const h = 56;
+  const h = 100;
   const pad = 8;
   const innerW = w - pad * 2;
   const innerH = h - pad * 2;
@@ -152,9 +152,7 @@ function barPercent(count) {
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-surface px-6 pt-10 pb-28 font-sans transition-colors duration-200"
-  >
+  <div class="min-h-screen bg-surface px-6 pt-10 pb-28 font-sans transition-colors duration-200">
     <!-- Title -->
     <header class="mb-6">
       <h1 class="text-2xl font-bold text-heading">Tableau de bord</h1>
@@ -233,16 +231,6 @@ function barPercent(count) {
         </div>
       </div>
 
-      <!-- Entries count badge -->
-      <div
-        class="bg-accent-faint rounded-xl px-4 py-3 mb-6 flex items-center gap-3 border border-accent-light"
-      >
-        <span class="text-xl">📝</span>
-        <p class="text-sm text-heading font-medium">
-          <span class="font-bold text-accent">{{ entryCount }}</span> entrée{{ entryCount > 1 ? "s" : "" }} sur cette période
-        </p>
-      </div>
-
       <!-- Sparkline / Mood trend -->
       <div
         v-if="moodTrend.length >= 2"
@@ -251,42 +239,47 @@ function barPercent(count) {
         <p class="text-xs text-muted font-semibold uppercase tracking-wide mb-3">
           Évolution de l'humeur
         </p>
-        <div class="w-full overflow-hidden">
-          <svg viewBox="0 0 280 56" class="w-full h-14" preserveAspectRatio="none">
-            <!-- Grid lines -->
-            <line
-              v-for="i in 5"
-              :key="'grid-' + i"
-              :x1="8"
-              :x2="272"
-              :y1="8 + ((5 - i) / 4) * 40"
-              :y2="8 + ((5 - i) / 4) * 40"
-              stroke="var(--color-line)"
-              stroke-width="0.5"
-            />
-            <!-- Sparkline -->
-            <path
-              :d="sparklinePath"
-              fill="none"
-              stroke="var(--color-accent)"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <!-- Dots -->
-            <circle
-              v-for="(dot, i) in sparklineDots"
-              :key="'dot-' + i"
-              :cx="dot.x"
-              :cy="dot.y"
-              r="3"
-              fill="var(--color-accent)"
-            />
-          </svg>
-        </div>
-        <div class="flex justify-between mt-1 text-[9px] text-dim font-medium">
-          <span>Très mal</span>
-          <span>Très bien</span>
+        <div class="flex items-stretch gap-2">
+          <div class="flex-1 overflow-hidden">
+            <svg viewBox="0 0 280 100" class="w-full h-24" preserveAspectRatio="none">
+              <!-- Grid lines -->
+              <line
+                v-for="i in 5"
+                :key="'grid-' + i"
+                :x1="8"
+                :x2="272"
+                :y1="8 + ((5 - i) / 4) * 84"
+                :y2="8 + ((5 - i) / 4) * 84"
+                stroke="var(--color-line)"
+                stroke-width="0.5"
+              />
+              <!-- Sparkline -->
+              <path
+                :d="sparklinePath"
+                fill="none"
+                stroke="var(--color-accent)"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <!-- Dots -->
+              <circle
+                v-for="(dot, i) in sparklineDots"
+                :key="'dot-' + i"
+                :cx="dot.x"
+                :cy="dot.y"
+                r="3"
+                fill="var(--color-accent)"
+              />
+            </svg>
+          </div>
+          <div class="flex flex-col justify-between text-[9px] text-dim font-bold shrink-0 py-0.5 tabular-nums">
+            <span>5 <span class="font-medium">Très bien</span></span>
+            <span>4</span>
+            <span>3</span>
+            <span>2</span>
+            <span>1 <span class="font-medium">Très mal</span></span>
+          </div>
         </div>
       </div>
 
