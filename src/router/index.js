@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import HomeView from "../views/HomeView.vue";
+import DashboardView from "../views/DashboardView.vue";
 import StepMoodView from "../views/StepMoodView.vue";
 import StepFactorsView from "../views/StepFactorsView.vue";
 import StepPositiveView from "../views/StepPositiveView.vue";
@@ -24,6 +25,7 @@ const router = createRouter({
 
     // Private
     { path: "/home", name: "home", component: HomeView, meta: { requiresAuth: true } },
+    { path: "/dashboard", name: "dashboard", component: DashboardView, meta: { requiresAuth: true } },
 
     {
       path: "/step-mood",

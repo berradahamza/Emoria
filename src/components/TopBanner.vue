@@ -8,6 +8,7 @@ const authStore = useAuthStore();
 const { isDark, toggle: toggleTheme } = useTheme();
 
 const goHome = () => router.push("/home");
+const goDashboard = () => router.push("/dashboard");
 const goSuccessHistory = () => router.push("/success-history");
 
 const logout = async () => {
@@ -41,6 +42,20 @@ const logout = async () => {
             stroke-linecap="round"
             stroke-linejoin="round"
           />
+        </svg>
+      </button>
+
+      <button
+        @click="goDashboard"
+        class="flex flex-col items-center justify-center active:scale-95 transition-all"
+        :class="router.currentRoute.value.path === '/dashboard' ? 'text-accent-soft' : 'text-muted'"
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <path d="M4 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M8 19V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M12 19V8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M16 19V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M20 19V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
         </svg>
       </button>
 
