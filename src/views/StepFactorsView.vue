@@ -50,7 +50,7 @@ const toggleBad = (id) => {
 
 <template>
   <div
-    class="flex flex-col min-h-screen px-6 py-12 bg-surface font-sans transition-colors duration-200 pb-28"
+    class="flex flex-col min-h-screen px-6 py-12 bg-surface font-sans transition-colors duration-200 pb-40"
   >
     <!-- Header -->
     <div class="w-full flex justify-between items-center mb-8">
