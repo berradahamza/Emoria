@@ -82,7 +82,7 @@ const goBack = () => {
         </svg>
       </button>
 
-      <div class="text-dim text-sm font-medium">3/3</div>
+      <div class="text-dim text-sm font-medium">4/4</div>
     </div>
 
     <div class="w-full flex-1 mt-4">

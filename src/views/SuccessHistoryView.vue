@@ -48,7 +48,7 @@ const formatDate = (ymd) => {
   <div class="min-h-screen bg-surface px-6 pt-10 pb-28 transition-colors duration-200">
     <div class="flex items-center gap-3 mb-2">
       <router-link
-        to="/analysis"
+        to="/home"
         class="p-2 -ml-2 text-muted hover:text-body active:scale-95 transition-all"
       >
         <svg

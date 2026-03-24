@@ -62,7 +62,7 @@ const goHome = () => {
         </svg>
       </button>
 
-      <div class="text-dim text-sm font-medium">1/3</div>
+      <div class="text-dim text-sm font-medium">1/4</div>
     </div>
 
     <h1 class="text-2xl font-bold text-center text-heading leading-tight mb-10">
@@ -91,7 +91,7 @@ const goHome = () => {
       </div>
 
       <router-link
-        to="/step-positives"
+        to="/step-factors"
         class="w-full flex justify-center hover:opacity-90 active:scale-95 transition-all"
       >
         <BoutonContinuer />

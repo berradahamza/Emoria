@@ -25,6 +25,8 @@ export const useJournalStore = defineStore("journal", {
     mood: 3,
     positivesText: "",
     successList: [],
+    goodFactors: [],
+    badFactors: [],
     savedEntries: {},
     updateCounter: 0,
 
@@ -107,10 +109,14 @@ export const useJournalStore = defineStore("journal", {
         this.mood = Number(entry.mood ?? 3);
         this.positivesText = entry.positivesText ?? "";
         this.successList = Array.isArray(entry.successList) ? [...entry.successList] : [];
+        this.goodFactors = Array.isArray(entry.goodFactors) ? [...entry.goodFactors] : [];
+        this.badFactors = Array.isArray(entry.badFactors) ? [...entry.badFactors] : [];
       } else {
         this.mood = 3;
         this.positivesText = "";
         this.successList = [];
+        this.goodFactors = [];
+        this.badFactors = [];
       }
     },
 
@@ -137,6 +143,8 @@ export const useJournalStore = defineStore("journal", {
         mood: Number(this.mood),
         positivesText: this.positivesText,
         successList: [...this.successList],
+        goodFactors: [...this.goodFactors],
+        badFactors: [...this.badFactors],
         updatedAt: serverTimestamp(),
       };
 

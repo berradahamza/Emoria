@@ -3,9 +3,9 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import HomeView from "../views/HomeView.vue";
 import StepMoodView from "../views/StepMoodView.vue";
+import StepFactorsView from "../views/StepFactorsView.vue";
 import StepPositiveView from "../views/StepPositiveView.vue";
 import StepSuccessView from "../views/StepSuccessView.vue";
-import AnalyseView from "../views/AnalyseView.vue";
 import SuccessHistoryView from "../views/SuccessHistoryView.vue";
 
 import LoginView from "../views/LoginView.vue";
@@ -24,12 +24,17 @@ const router = createRouter({
 
     // Private
     { path: "/home", name: "home", component: HomeView, meta: { requiresAuth: true } },
-    { path: "/analysis", name: "analysis", component: AnalyseView, meta: { requiresAuth: true } },
 
     {
       path: "/step-mood",
       name: "step-mood",
       component: StepMoodView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/step-factors",
+      name: "step-factors",
+      component: StepFactorsView,
       meta: { requiresAuth: true },
     },
     {

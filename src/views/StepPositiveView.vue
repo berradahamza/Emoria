@@ -7,7 +7,7 @@ const router = useRouter();
 const store = useJournalStore();
 
 const goBack = () => {
-  router.push("/step-mood");
+  router.push("/step-factors");
 };
 </script>
 
@@ -34,7 +34,7 @@ const goBack = () => {
         </svg>
       </button>
 
-      <div class="text-dim text-sm font-medium">2/3</div>
+      <div class="text-dim text-sm font-medium">3/4</div>
     </div>
 
     <div class="w-full">
