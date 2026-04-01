@@ -1,26 +1,26 @@
 // Firebase MUST be initialized before any component imports it indirectly.
-import './firebase/config'
-import './assets/main.css'
+import "./firebase/config";
+import "./assets/main.css";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
 
-import App from './App.vue'
-import router from './router'
+import App from "./App.vue";
+import router from "./router";
 
-import { useAuthStore } from './stores/auth'
+import { useAuthStore } from "./stores/auth";
 
-import { registerSW } from 'virtual:pwa-register'
-registerSW({ immediate: true })
+import { registerSW } from "virtual:pwa-register";
+registerSW({ immediate: true });
 
-const app = createApp(App)
+const app = createApp(App);
 
-const pinia = createPinia()
-app.use(pinia)
-app.use(router)
+const pinia = createPinia();
+app.use(pinia);
+app.use(router);
 
 // attendre la restauration Firebase (évite redirection login au refresh)
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 authStore.initAuthListener().then(() => {
-  app.mount('#app')
-})
+  app.mount("#app");
+});
