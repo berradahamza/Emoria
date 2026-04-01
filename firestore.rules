@@ -16,6 +16,22 @@ service cloud.firestore {
       match /entries/{dateId} {
         allow read, write: if isOwner(userId);
       }
+
+      match /exposureCategories/{catId} {
+        allow read, write: if isOwner(userId);
+
+        match /exposures/{expId} {
+          allow read, write: if isOwner(userId);
+
+          match /logs/{logId} {
+            allow read, write: if isOwner(userId);
+          }
+        }
+      }
+
+      match /notificationPrefs/{notifType} {
+        allow read, write: if isOwner(userId);
+      }
     }
 
     match /{document=**} {

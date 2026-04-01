@@ -28,7 +28,10 @@ export default defineConfig({
         ]
       },
       workbox: {
-        navigateFallback: '/index.html'
+        navigateFallback: '/index.html',
+        // Inject the Firebase messaging SW into the generated Workbox SW so
+        // background push events are handled by both workbox caching AND FCM.
+        importScripts: ['/firebase-messaging-sw.js'],
       }
     })
   ]

@@ -125,26 +125,6 @@ const sparklineDots = computed(() => {
   }));
 });
 
-// Streak: consecutive days filled ending today
-const currentStreak = computed(() => {
-  void store.updateCounter;
-  let streak = 0;
-  const d = new Date();
-  while (true) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    const key = `${y}-${m}-${day}`;
-    if (store.savedEntries[key]?.mood) {
-      streak++;
-      d.setDate(d.getDate() - 1);
-    } else {
-      break;
-    }
-  }
-  return streak;
-});
-
 // Bar width percentage for factor ranking
 function barPercent(count) {
   return `${Math.min(100, (count / entryCount.value) * 100)}%`;
@@ -189,12 +169,10 @@ function barPercent(count) {
     </div>
 
     <template v-else>
-      <!-- Row 1 : Mood average + Streak -->
-      <div class="grid grid-cols-3 gap-3 mb-4">
+      <!-- Row 1 : Mood average -->
+      <div class="mb-4">
         <!-- Mood average -->
-        <div
-          class="col-span-2 bg-surface-alt rounded-2xl p-5 border border-line flex items-center gap-4"
-        >
+        <div class="bg-surface-alt rounded-2xl p-5 border border-line flex items-center gap-4">
           <div
             class="w-16 h-16 rounded-full flex items-center justify-center shrink-0"
             :class="{
@@ -217,17 +195,6 @@ function barPercent(count) {
             </p>
             <p class="text-xs text-body mt-0.5">{{ moodLabels[avgMoodRounded] }}</p>
           </div>
-        </div>
-
-        <!-- Streak -->
-        <div
-          class="bg-surface-alt rounded-2xl p-4 border border-line flex flex-col items-center justify-center text-center"
-        >
-          <p class="text-3xl font-bold text-accent leading-none">{{ currentStreak }}</p>
-          <p class="text-[10px] text-muted font-semibold uppercase tracking-wide mt-1">
-            jour{{ currentStreak > 1 ? "s" : "" }}<br />d'affilée
-          </p>
-          <p class="text-lg mt-0.5">🔥</p>
         </div>
       </div>
 

@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix --cache",
-    "deploy:prod": "vite build --mode prod && firebase deploy --only hosting"
+    "deploy:prod": "vite build --mode prod && npm --prefix functions run build && firebase deploy --only hosting,functions,firestore:rules"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",

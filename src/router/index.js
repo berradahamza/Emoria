@@ -9,6 +9,11 @@ import StepPositiveView from "../views/StepPositiveView.vue";
 import StepSuccessView from "../views/StepSuccessView.vue";
 import SuccessHistoryView from "../views/SuccessHistoryView.vue";
 
+import ExposureListView from "../views/ExposureListView.vue";
+import ExposureDetailView from "../views/ExposureDetailView.vue";
+
+import SettingsView from "../views/SettingsView.vue";
+
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
 
@@ -60,6 +65,28 @@ const router = createRouter({
       path: "/success-history",
       name: "success-history",
       component: SuccessHistoryView,
+      meta: { requiresAuth: true },
+    },
+
+    // Expositions TCC
+    {
+      path: "/exposures",
+      name: "exposures",
+      component: ExposureListView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/exposures/:catId/:expId",
+      name: "exposure-detail",
+      component: ExposureDetailView,
+      meta: { requiresAuth: true },
+    },
+
+    // Réglages
+    {
+      path: "/settings",
+      name: "settings",
+      component: SettingsView,
       meta: { requiresAuth: true },
     },
   ],

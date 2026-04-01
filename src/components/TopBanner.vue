@@ -10,6 +10,8 @@ const { isDark, toggle: toggleTheme } = useTheme();
 const goHome = () => router.push("/home");
 const goDashboard = () => router.push("/dashboard");
 const goSuccessHistory = () => router.push("/success-history");
+const goExposures = () => router.push("/exposures");
+const goSettings = () => router.push("/settings");
 
 const logout = async () => {
   await authStore.logout();
@@ -76,9 +78,50 @@ const logout = async () => {
           />
         </svg>
       </button>
+
+      <button
+        @click="goExposures"
+        class="flex flex-col items-center justify-center active:scale-95 transition-all"
+        :class="
+          router.currentRoute.value.path.startsWith('/exposures')
+            ? 'text-accent-soft'
+            : 'text-muted'
+        "
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+          <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="2" />
+          <circle cx="12" cy="12" r="2" fill="currentColor" />
+        </svg>
+      </button>
     </div>
 
     <div class="flex items-center gap-4">
+      <button
+        @click="goSettings"
+        class="active:scale-95 transition-all"
+        :class="
+          router.currentRoute.value.path === '/settings'
+            ? 'text-accent-soft'
+            : 'text-muted hover:text-heading'
+        "
+        title="Réglages"
+      >
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+          />
+        </svg>
+      </button>
+
       <button
         @click="toggleTheme"
         class="text-muted hover:text-heading active:scale-95 transition-all"
