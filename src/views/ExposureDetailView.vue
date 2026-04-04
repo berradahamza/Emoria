@@ -83,6 +83,14 @@ const diffBg = (val) => {
 
 const formatDate = (dt) => {
   if (!dt) return "";
+  // Old logs: "YYYY-MM-DD", new logs: "YYYY-MM-DDTHH:mm"
+  const hasTime = typeof dt === "string" && dt.includes("T");
+  if (!hasTime) {
+    // Date-only: parse parts manually to avoid UTC timezone shift
+    const [y, m, d] = dt.split("-");
+    if (!y || !m || !d) return dt;
+    return `${d}/${m}/${y}`;
+  }
   const d = new Date(dt);
   if (isNaN(d)) return dt;
   return d.toLocaleString("fr-FR", {
