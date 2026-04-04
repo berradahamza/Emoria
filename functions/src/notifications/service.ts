@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import { logger } from "firebase-functions";
 import type { NotifHandler, NotifPref, UserNotifData } from "./types";
-import { sendPush } from "./sender";
+import { sendPushToAll } from "./sender";
 
 // ── Handler registry ──
 import { dailyReminderHandler } from "./handlers/dailyReminder";
@@ -70,16 +70,20 @@ async function processHandler(
       const pathParts = prefDoc.ref.path.split("/");
       const uid = pathParts[1];
 
-      // Load user doc for fcmToken + timezone
+      // Load user doc for fcmTokens + timezone
       const userSnap = await getDb().doc(`users/${uid}`).get();
       if (!userSnap.exists) continue;
 
-      const userData = userSnap.data() as UserNotifData & { fcmToken?: string; timezone?: string };
-      if (!userData.fcmToken) continue;
+      const userData = userSnap.data() as {
+        fcmTokens?: Record<string, string>;
+        timezone?: string;
+      };
+      const fcmTokens = userData.fcmTokens || {};
+      if (Object.keys(fcmTokens).length === 0) continue;
 
       const user: UserNotifData = {
         uid,
-        fcmToken: userData.fcmToken,
+        fcmTokens,
         timezone: userData.timezone || "Europe/Paris",
       };
 
@@ -111,9 +115,9 @@ async function processHandler(
       // Ask handler if we should send
       if (!(await handler.shouldSend(user, pref))) continue;
 
-      // Build and send
+      // Build and send to all devices
       const message = handler.buildMessage(user, pref);
-      const sent = await sendPush(userData.fcmToken, message, uid);
+      const sent = await sendPushToAll(fcmTokens, message, uid);
 
       if (sent) {
         await prefDoc.ref.update({

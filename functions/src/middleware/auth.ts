@@ -1,7 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/https";
 import * as admin from "firebase-admin";
 import type { NotifMessage } from "../notifications/types";
-import { sendPush } from "../notifications/sender";
+import { sendPushToAll } from "../notifications/sender";
 
 /**
  * Authenticated onCall endpoint for testing notifications.
@@ -22,8 +22,8 @@ export const testNotification = onCall({ maxInstances: 5 }, async (request) => {
   }
 
   const userData = userSnap.data();
-  const fcmToken = userData?.fcmToken;
-  if (!fcmToken) {
+  const fcmTokens: Record<string, string> = userData?.fcmTokens || {};
+  if (Object.keys(fcmTokens).length === 0) {
     throw new HttpsError("failed-precondition", "No FCM token found. Enable notifications first.");
   }
 
@@ -32,6 +32,6 @@ export const testNotification = onCall({ maxInstances: 5 }, async (request) => {
     body: "Si tu vois ça, les notifications fonctionnent !",
   };
 
-  const sent = await sendPush(fcmToken, message, uid);
+  const sent = await sendPushToAll(fcmTokens, message, uid);
   return { success: sent };
 });

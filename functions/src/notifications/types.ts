@@ -18,7 +18,7 @@ export interface NotifPref {
 /** User document fields relevant to notifications */
 export interface UserNotifData {
   uid: string;
-  fcmToken?: string;
+  fcmTokens?: Record<string, string>; // { deviceId: token }
   timezone?: string;
 }
 

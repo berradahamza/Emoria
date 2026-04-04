@@ -13,6 +13,7 @@ import {
 
 import { useJournalStore } from "./journal";
 import { useExposureStore } from "./exposure";
+import { useFCM } from "../composables/useFCM";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -68,9 +69,7 @@ export const useAuthStore = defineStore("auth", {
               await exposureStore.loadAll(fbUser.uid);
               // Refresh FCM token if notifications are already granted
               if ("Notification" in window && Notification.permission === "granted") {
-                import("../composables/useFCM").then(({ useFCM }) => {
-                  useFCM().requestPermissionAndToken(fbUser.uid);
-                });
+                useFCM().requestPermissionAndToken(fbUser.uid);
               }
             } else {
               journal.savedEntries = {};
@@ -141,6 +140,14 @@ export const useAuthStore = defineStore("auth", {
 
     async logout() {
       this.error = null;
+      // Remove this device's FCM token before signing out
+      if (this.user?.uid && "Notification" in window && Notification.permission === "granted") {
+        try {
+          await useFCM().removeToken(this.user.uid);
+        } catch (_) {
+          // Best-effort cleanup — don't block signout
+        }
+      }
       await fbSignOut(auth);
     },
 

@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { messaging, getToken, onMessage } from "../firebase/messaging";
 import { db } from "../firebase/config";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc, deleteField } from "firebase/firestore";
 
 const VAPID_KEY =
   "BC2VBevz9BpubE3drDBSajs3w7JmNNPlMr5qT7h-6ekGNskpaFg0H2W3ru3efBlI5xEDcZwCqilwH-8ZJmnI9EE";
@@ -10,8 +10,20 @@ const VAPID_KEY =
 const fcmToken = ref(null);
 const permissionStatus = ref("default"); // "default" | "granted" | "denied"
 
+/** Stable per-browser device ID stored in localStorage */
+function getDeviceId() {
+  const KEY = "emoria_device_id";
+  let id = localStorage.getItem(KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(KEY, id);
+  }
+  return id;
+}
+
 /**
  * Request notification permission, get FCM token, save to Firestore.
+ * Stores under fcmTokens.{deviceId} so each device has exactly one token.
  */
 async function requestPermissionAndToken(uid) {
   if (!("Notification" in window)) {
@@ -25,7 +37,6 @@ async function requestPermissionAndToken(uid) {
   if (permission !== "granted") return null;
 
   try {
-    // Wait for the active service worker — avoids timing issues on fresh loads
     const swReg = await navigator.serviceWorker.ready;
 
     const token = await getToken(messaging, {
@@ -35,14 +46,32 @@ async function requestPermissionAndToken(uid) {
 
     if (token) {
       fcmToken.value = token;
-      // Use setDoc+merge so it works even if the user doc doesn't exist yet
+      const deviceId = getDeviceId();
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Paris";
-      await setDoc(doc(db, "users", uid), { fcmToken: token, timezone: tz }, { merge: true });
+      await setDoc(
+        doc(db, "users", uid),
+        { [`fcmTokens.${deviceId}`]: token, timezone: tz },
+        { merge: true },
+      );
     }
     return token;
   } catch (err) {
     console.error("FCM getToken error:", err);
     return null;
+  }
+}
+
+/**
+ * Remove this device's FCM token from Firestore (called on sign-out).
+ */
+async function removeToken(uid) {
+  try {
+    const deviceId = getDeviceId();
+    await updateDoc(doc(db, "users", uid), {
+      [`fcmTokens.${deviceId}`]: deleteField(),
+    });
+  } catch (err) {
+    console.error("FCM removeToken error:", err);
   }
 }
 
@@ -77,6 +106,7 @@ export function useFCM() {
     fcmToken,
     permissionStatus,
     requestPermissionAndToken,
+    removeToken,
     listenForegroundMessages,
   };
 }
