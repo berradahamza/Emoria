@@ -276,7 +276,7 @@ onMounted(async () => {
               </div>
               <button
                 @click.stop="openEditExp(cat.id, exp)"
-                class="p-1 text-muted hover:text-accent-soft transition-colors opacity-0 group-hover:opacity-100"
+                class="p-1 text-muted hover:text-accent-soft transition-colors"
                 title="Modifier"
               >
                 <svg
@@ -293,7 +293,7 @@ onMounted(async () => {
               </button>
               <button
                 @click.stop="deleteExp(cat.id, exp.id)"
-                class="p-1 text-muted hover:text-danger transition-colors opacity-0 group-hover:opacity-100"
+                class="p-1 text-muted hover:text-danger transition-colors"
                 title="Supprimer"
               >
                 <svg
