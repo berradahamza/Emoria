@@ -29,6 +29,11 @@ function nowLocal() {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+/** Convert a datetime-local value (no TZ) to a UTC ISO string for storage. */
+function localToUTC(localStr) {
+  return new Date(localStr).toISOString();
+}
+
 const openLogForm = () => {
   logDate.value = nowLocal();
   logFelt.value = 5;
@@ -38,7 +43,8 @@ const openLogForm = () => {
 
 const saveLog = async () => {
   if (!logDate.value) return;
-  await store.addLog(authStore.uid, catId, expId, logDate.value, logFelt.value, logComment.value);
+  const utcDate = localToUTC(logDate.value);
+  await store.addLog(authStore.uid, catId, expId, utcDate, logFelt.value, logComment.value);
   showLogForm.value = false;
 };
 
@@ -83,14 +89,6 @@ const diffBg = (val) => {
 
 const formatDate = (dt) => {
   if (!dt) return "";
-  // Old logs: "YYYY-MM-DD", new logs: "YYYY-MM-DDTHH:mm"
-  const hasTime = typeof dt === "string" && dt.includes("T");
-  if (!hasTime) {
-    // Date-only: parse parts manually to avoid UTC timezone shift
-    const [y, m, d] = dt.split("-");
-    if (!y || !m || !d) return dt;
-    return `${d}/${m}/${y}`;
-  }
   const d = new Date(dt);
   if (isNaN(d)) return dt;
   return d.toLocaleString("fr-FR", {

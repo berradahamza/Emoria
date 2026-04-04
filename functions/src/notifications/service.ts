@@ -89,12 +89,23 @@ async function processHandler(
       if (userHourUTC !== utcHour) continue;
       if (pref.schedule.minute < windowStart || pref.schedule.minute > windowEnd) continue;
 
-      // Check if already sent today
+      // Check if already sent today (in the user's timezone)
       if (pref.lastSentAt) {
         const lastSent = pref.lastSentAt.toDate();
-        const todayStart = new Date();
-        todayStart.setUTCHours(0, 0, 0, 0);
-        if (lastSent >= todayStart) continue;
+        const tz = user.timezone || "Europe/Paris";
+        const todayLocalStr = new Intl.DateTimeFormat("en-CA", {
+          timeZone: tz,
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date());
+        const lastSentLocalStr = new Intl.DateTimeFormat("en-CA", {
+          timeZone: tz,
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(lastSent);
+        if (lastSentLocalStr === todayLocalStr) continue;
       }
 
       // Ask handler if we should send
