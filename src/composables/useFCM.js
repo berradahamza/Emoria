@@ -48,11 +48,18 @@ async function requestPermissionAndToken(uid) {
       fcmToken.value = token;
       const deviceId = getDeviceId();
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Paris";
-      await setDoc(
-        doc(db, "users", uid),
-        { [`fcmTokens.${deviceId}`]: token, timezone: tz },
-        { merge: true },
-      );
+      const userRef = doc(db, "users", uid);
+      // updateDoc interprets dot-separated keys as field paths (nested map update)
+      // setDoc with merge treats them as literal field names — wrong for nested maps
+      try {
+        await updateDoc(userRef, {
+          [`fcmTokens.${deviceId}`]: token,
+          timezone: tz,
+        });
+      } catch {
+        // Doc doesn't exist yet (edge case) — create it with the nested map
+        await setDoc(userRef, { fcmTokens: { [deviceId]: token }, timezone: tz });
+      }
     }
     return token;
   } catch (err) {
