@@ -175,7 +175,34 @@ export const useExposureStore = defineStore("exposure", {
         createdAt: serverTimestamp(),
       };
       await setDoc(this._logDoc(uid, catId, expId, id), payload);
-      exp.logs.unshift({ id, ...payload });
+      exp.logs.push({ id, ...payload });
+      exp.logs.sort((a, b) => {
+        const da = a.date || "";
+        const db2 = b.date || "";
+        return db2.localeCompare(da);
+      });
+    },
+
+    async updateLog(uid, catId, expId, logId, date, feltDifficulty, comment) {
+      const cat = this.categories.find((c) => c.id === catId);
+      const exp = cat?.exposures.find((e) => e.id === expId);
+      if (!exp) return;
+
+      const updates = {
+        date,
+        feltDifficulty: Number(feltDifficulty),
+        comment: (comment || "").trim(),
+      };
+      await setDoc(this._logDoc(uid, catId, expId, logId), updates, { merge: true });
+      const log = exp.logs.find((l) => l.id === logId);
+      if (log) {
+        Object.assign(log, updates);
+        exp.logs.sort((a, b) => {
+          const da = a.date || "";
+          const db2 = b.date || "";
+          return db2.localeCompare(da);
+        });
+      }
     },
 
     async deleteLog(uid, catId, expId, logId) {

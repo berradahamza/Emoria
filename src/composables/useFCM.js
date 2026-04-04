@@ -54,12 +54,20 @@ function listenForegroundMessages(callback) {
     if (callback) {
       callback(payload);
     } else {
-      // Default: show a browser notification even in foreground
+      // Support both notification and data-only payloads
       const notif = payload.notification || {};
-      new Notification(notif.title || "Emoria", {
-        body: notif.body || "",
-        icon: "/EmoriaLogo192.png",
-      });
+      const data = payload.data || {};
+      const title = notif.title || data.title || "Emoria";
+      const options = {
+        body: notif.body || data.body || "",
+        icon: notif.icon || data.icon || "/EmoriaLogo192.png",
+      };
+      // On mobile, new Notification() is blocked — use SW showNotification
+      if (navigator.serviceWorker?.controller) {
+        navigator.serviceWorker.ready.then((reg) => reg.showNotification(title, options));
+      } else {
+        new Notification(title, options);
+      }
     }
   });
 }

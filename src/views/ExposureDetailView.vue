@@ -19,6 +19,7 @@ const exposure = computed(() => store.getExposure(catId, expId));
 
 // ── Log form ──
 const showLogForm = ref(false);
+const editingLogId = ref(null);
 const logDate = ref(nowLocal());
 const logFelt = ref(5);
 const logComment = ref("");
@@ -35,16 +36,45 @@ function localToUTC(localStr) {
 }
 
 const openLogForm = () => {
+  editingLogId.value = null;
   logDate.value = nowLocal();
   logFelt.value = 5;
   logComment.value = "";
   showLogForm.value = true;
 };
 
+/** Convert a UTC ISO string to a datetime-local value for the input. */
+function utcToLocal(utcStr) {
+  const d = new Date(utcStr);
+  if (isNaN(d)) return utcStr;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+const openEditLog = (log) => {
+  editingLogId.value = log.id;
+  logDate.value = utcToLocal(log.date);
+  logFelt.value = log.feltDifficulty;
+  logComment.value = log.comment || "";
+  showLogForm.value = true;
+};
+
 const saveLog = async () => {
   if (!logDate.value) return;
   const utcDate = localToUTC(logDate.value);
-  await store.addLog(authStore.uid, catId, expId, utcDate, logFelt.value, logComment.value);
+  if (editingLogId.value) {
+    await store.updateLog(
+      authStore.uid,
+      catId,
+      expId,
+      editingLogId.value,
+      utcDate,
+      logFelt.value,
+      logComment.value,
+    );
+  } else {
+    await store.addLog(authStore.uid, catId, expId, utcDate, logFelt.value, logComment.value);
+  }
   showLogForm.value = false;
 };
 
@@ -185,6 +215,23 @@ onMounted(async () => {
                   Ressenti : {{ log.feltDifficulty }}/10
                 </span>
                 <button
+                  @click="openEditLog(log)"
+                  class="p-1 text-muted hover:text-accent-soft transition-colors"
+                  title="Modifier"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                </button>
+                <button
                   @click="deleteLog(log.id)"
                   class="p-1 text-muted hover:text-danger transition-colors"
                   title="Supprimer"
@@ -217,7 +264,9 @@ onMounted(async () => {
         @click.self="showLogForm = false"
       >
         <div class="w-full max-w-md bg-surface rounded-t-2xl p-6 pb-8 animate-slide-up">
-          <h2 class="text-lg font-bold text-heading mb-4">Nouvelle réalisation</h2>
+          <h2 class="text-lg font-bold text-heading mb-4">
+            {{ editingLogId ? "Modifier la réalisation" : "Nouvelle réalisation" }}
+          </h2>
 
           <!-- Date -->
           <label class="block text-sm font-semibold text-heading mb-1">Date</label>

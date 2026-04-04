@@ -18,11 +18,17 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  const notif = payload.notification || {};
-  self.registration.showNotification(notif.title || "Emoria", {
-    body: notif.body || "",
-    icon: "/EmoriaLogo192.png",
+  // When webpush.notification is set, the browser already shows the
+  // notification automatically. Only show manually for data-only messages.
+  if (payload.notification) return;
+
+  const data = payload.data || {};
+  const title = data.title || "Emoria";
+  const body = data.body || "";
+  self.registration.showNotification(title, {
+    body,
+    icon: data.icon || "/EmoriaLogo192.png",
     badge: "/EmoriaLogo192.png",
-    data: payload.data || {},
+    data,
   });
 });

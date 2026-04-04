@@ -12,15 +12,24 @@ export async function sendPush(
   uid: string,
 ): Promise<boolean> {
   try {
+    // Use webpush.notification (platform-specific) instead of top-level
+    // notification. This ensures the service worker receives and displays
+    // the full notification content on Android Chrome without the
+    // duplicate/empty notification issue.
     await admin.messaging().send({
       token: fcmToken,
-      notification: {
+      data: {
         title: message.title,
         body: message.body,
-        ...(message.icon ? { imageUrl: message.icon } : {}),
+        ...(message.data ?? {}),
       },
-      data: message.data ?? {},
       webpush: {
+        notification: {
+          title: message.title,
+          body: message.body,
+          icon: message.icon || "/EmoriaLogo192.png",
+          badge: "/EmoriaLogo192.png",
+        },
         fcmOptions: {
           link: "/",
         },

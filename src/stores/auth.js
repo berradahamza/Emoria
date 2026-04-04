@@ -66,6 +66,12 @@ export const useAuthStore = defineStore("auth", {
               journal.loadDate(journal.selectedDate);
               // Recharge les expositions TCC
               await exposureStore.loadAll(fbUser.uid);
+              // Refresh FCM token if notifications are already granted
+              if ("Notification" in window && Notification.permission === "granted") {
+                import("../composables/useFCM").then(({ useFCM }) => {
+                  useFCM().requestPermissionAndToken(fbUser.uid);
+                });
+              }
             } else {
               journal.savedEntries = {};
               journal.updateCounter++;
