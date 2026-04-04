@@ -8,6 +8,7 @@ export interface NotifSchedule {
 
 /** Stored in Firestore: users/{uid}/notificationPrefs/{notifType} */
 export interface NotifPref {
+  type: string;
   enabled: boolean;
   schedule: NotifSchedule;
   config?: Record<string, unknown>; // type-specific extra config

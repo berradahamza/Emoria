@@ -19,17 +19,18 @@ const exposure = computed(() => store.getExposure(catId, expId));
 
 // ── Log form ──
 const showLogForm = ref(false);
-const logDate = ref(todayYMD());
+const logDate = ref(nowLocal());
 const logFelt = ref(5);
 const logComment = ref("");
 
-function todayYMD() {
+function nowLocal() {
   const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 const openLogForm = () => {
-  logDate.value = todayYMD();
+  logDate.value = nowLocal();
   logFelt.value = 5;
   logComment.value = "";
   showLogForm.value = true;
@@ -80,10 +81,17 @@ const diffBg = (val) => {
   return "bg-red-50 dark:bg-red-950/30";
 };
 
-const formatDate = (ymd) => {
-  if (!ymd) return "";
-  const [y, m, d] = ymd.split("-");
-  return `${d}/${m}/${y}`;
+const formatDate = (dt) => {
+  if (!dt) return "";
+  const d = new Date(dt);
+  if (isNaN(d)) return dt;
+  return d.toLocaleString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };
 
 // ── Init ──
@@ -208,7 +216,7 @@ onMounted(async () => {
           <!-- Date -->
           <label class="block text-sm font-semibold text-heading mb-1">Date</label>
           <input
-            type="date"
+            type="datetime-local"
             v-model="logDate"
             class="w-full px-4 py-3 rounded-lg border border-line-strong bg-input-bg text-body focus:outline-none focus:ring-2 focus:ring-accent-soft/40 mb-4"
           />

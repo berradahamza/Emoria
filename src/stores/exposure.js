@@ -66,7 +66,11 @@ export const useExposureStore = defineStore("exposure", {
             const logSnap = await getDocs(this._logCol(uid, catDoc.id, expDoc.id));
             exp.logs = logSnap.docs
               .map((l) => ({ id: l.id, ...l.data() }))
-              .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+              .sort((a, b) => {
+                const da = a.date || "";
+                const db = b.date || "";
+                return db.localeCompare(da);
+              });
 
             cat.exposures.push(exp);
           }

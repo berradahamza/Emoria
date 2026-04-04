@@ -57,8 +57,8 @@ export const useNotificationsStore = defineStore("notifications", {
     },
 
     async savePref(uid, notifType, data) {
-      await setDoc(this._prefDoc(uid, notifType), data, { merge: true });
-      this.prefs[notifType] = { ...this.prefs[notifType], ...data };
+      await setDoc(this._prefDoc(uid, notifType), { ...data, type: notifType }, { merge: true });
+      this.prefs[notifType] = { ...this.prefs[notifType], ...data, type: notifType };
     },
 
     async togglePref(uid, notifType, enabled) {
@@ -67,6 +67,7 @@ export const useNotificationsStore = defineStore("notifications", {
         // Create with defaults
         const typeDef = NOTIF_TYPES.find((t) => t.type === notifType);
         const defaultData = {
+          type: notifType,
           enabled: true,
           schedule: typeDef?.defaultSchedule || { hour: 21, minute: 0 },
           config: {},

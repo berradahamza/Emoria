@@ -48,12 +48,12 @@ async function processHandler(
   windowStart: number,
   windowEnd: number,
 ): Promise<void> {
-  // Query all notificationPrefs docs of this type across all users
-  // We use a collectionGroup query
+  // Query all enabled notificationPrefs across all users, then filter by doc ID
+  // (collectionGroup __name__ filters require the full document path which is
+  //  unreliable, so we filter by the "type" field instead.)
   const prefsSnap = await getDb()
     .collectionGroup("notificationPrefs")
-    .where("__name__", ">=", `notificationPrefs/${handler.type}`)
-    .where("__name__", "<=", `notificationPrefs/${handler.type}`)
+    .where("type", "==", handler.type)
     .where("enabled", "==", true)
     .get();
 
