@@ -1,6 +1,6 @@
 // src/firebase/config.js
 import { initializeApp } from "firebase/app";
-import { getFirestore, enableMultiTabIndexedDbPersistence } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 // Use Vite environment variables when available. Copy `.env.example` to
@@ -20,10 +20,4 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-// ✅ Offline persistence (IndexedDB) + multi-tab
-// - Évite l'erreur "exclusive access" quand plusieurs tabs sont ouverts
-// - Si l'environnement ne le supporte pas, on ignore proprement
-enableMultiTabIndexedDbPersistence(db).catch(() => {
-  // failed-precondition / unimplemented: pas grave -> Firestore bascule en mémoire
-  // (ex: navigateur/onglets/environnement non compatibles)
-});
+
